@@ -1,0 +1,16 @@
+sequenceDiagram
+    participant User
+    participant API
+    participant JD
+    participant GP as GridPeer
+    User ->> API: POST /image/upload
+    API ->> API: Encrypt Image and make AI Task
+    API -->> User: Response OK
+    API ->> JD: Send AI Task
+    JD ->> GP: Distribute AI Task
+    GP ->> JD: All Peer completed tasks
+    JD ->> API: Send AI Result
+    API ->> User: Response caption position and translation
+
+
+
