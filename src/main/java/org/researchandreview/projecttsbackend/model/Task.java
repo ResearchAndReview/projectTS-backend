@@ -1,18 +1,17 @@
 package org.researchandreview.projecttsbackend.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.Data;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
-@Getter
-@RequiredArgsConstructor
-@AllArgsConstructor
+@Data
 public class Task {
-    private final String name;
-    private final String description;
-    private String status = "NONE";
-    private final Date date;
-
+    private Integer id;
+    private Integer workingNodeId;
+    private String status;
+    private Timestamp createdAt;
+    private Timestamp updatedAt;
+    private String failCause;
+    private String translateFrom;
+    private String translateTo;
 }
