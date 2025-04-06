@@ -6,6 +6,7 @@ import org.researchandreview.projecttsbackend.dto.GeneralRequest;
 import org.researchandreview.projecttsbackend.dto.TaskResponse;
 import org.researchandreview.projecttsbackend.model.Task;
 import org.researchandreview.projecttsbackend.service.TaskService;
+import org.researchandreview.projecttsbackend.util.FileIOManager;
 import org.researchandreview.projecttsbackend.util.UUIDGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -67,18 +68,8 @@ public class TaskController {
     @PostMapping(path="/image/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<GeneralReponse> taskUpload(@RequestPart String name, @RequestPart MultipartFile file) {
         try {
-            String fileName = file.getOriginalFilename();
-            long size = file.getSize();
-            String uploadDir = System.getenv("TEMP_IMG_FOLDER");
-            File dir = new File(uploadDir);
-            if (!dir.exists()) {
-                boolean created = dir.mkdirs();
-                if (!created) {
-                    throw new IOException("디렉토리 생성 실패: " + uploadDir);
-                }
-            }
-            file.transferTo(new File(uploadDir + "/" + fileName));
-            return ResponseEntity.ok(new GeneralReponse("Hello" + name + " " + fileName + " " + size + "bytes?"));
+            FileIOManager.saveMultipartFileToLocal(file);
+            return ResponseEntity.ok(new GeneralReponse("Image Saved"));
         } catch (Exception e) {
             return new ResponseEntity<>(new GeneralReponse(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
