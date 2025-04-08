@@ -2,13 +2,34 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="TaskMapper">
-    <select id="findAll" resultType="Task">
+<mapper namespace="org.researchandreview.projecttsbackend.mapper.TaskMapper">
+    <select id="findAllTasks" resultType="Task">
         SELECT * FROM Task;
     </select>
-    <insert id="insertOne">
-        INSERT INTO Task (working_node_id, status, created_at, updated_at, fail_cause, translate_from, translate_to)
-        VALUES (null, DEFAULT, DEFAULT, DEFAULT, null, #{translateFrom}, #{translateTo});
+    <select id="findOneTaskById" resultType="Task" parameterType="long">
+        SELECT * FROM Task where id=#{id};
+    </select>
+    <select id="findTasksByNodeId" resultType="Task" parameterType="string">
+        SELECT * FROM Task where working_node_id=#{workingNodeId};
+    </select>
+    <select id="findTasksByStatusSuccess" resultType="Task">
+        SELECT * FROM Task where status="SUCCESS";
+    </select>
+    <select id="findTasksByStatusProgress" resultType="Task">
+        SELECT * FROM Task where status="PROGRESS";
+    </select>
+    <select id="findTasksByStatusFailed" resultType="Task">
+        SELECT * FROM Task where status="FAILED";
+    </select>
+
+
+    <insert id="insertOneTask"
+            parameterType="org.researchandreview.projecttsbackend.model.Task"
+            useGeneratedKeys="true"
+            keyProperty="id"
+    >
+        INSERT INTO Task (working_node_id, owner_node_id, status, created_at, updated_at, fail_cause, translate_from, translate_to)
+        VALUES (null, #{ownerNodeId},DEFAULT,  DEFAULT, DEFAULT, null, #{translateFrom}, #{translateTo});
     </insert>
    <!-- <resultMap id="userResultMap" type="com.example.myapp.model.User">
         <id property="id" column="id"/>

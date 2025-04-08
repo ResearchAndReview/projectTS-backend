@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.researchandreview.projecttsbackend.mapper.ImageMapper">
+    <select id="findImageById" resultType="Image">
+        SELECT * FROM Image WHERE id=#{id};
+    </select>
+    <select id="findImagesByTaskId" resultType="Image">
+        SELECT * FROM Image WHERE task_id=#{taskId};
+    </select>
+    <insert id="insertOneImage" parameterType="org.researchandreview.projecttsbackend.model.Image" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO projectts.Image (task_id, x, y, width, height, image_url, created_at)
+        VALUES (#{taskId}, #{x}, #{y}, #{width}, #{height}, #{imageUrl}, DEFAULT);
+    </insert>
+</mapper>
