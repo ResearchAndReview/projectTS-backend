@@ -5,14 +5,11 @@ import lombok.Data;
 import java.sql.Timestamp;
 
 @Data
-public class Task {
+public class OCRTask {
     private Integer id;
-    private String workingNodeId;
-    private String ownerNodeId;
+    private Integer taskId;
+    private String failCause;
     private String status;
     private Timestamp createdAt;
     private Timestamp updatedAt;
-    private String failCause;
-    private String translateFrom;
-    private String translateTo;
 }
