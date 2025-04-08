@@ -3,6 +3,7 @@ package org.researchandreview.projecttsbackend.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.researchandreview.projecttsbackend.dto.GeneralReponse;
 import org.researchandreview.projecttsbackend.dto.GeneralRequest;
+import org.researchandreview.projecttsbackend.dto.TaskCreateSuccessfulResponse;
 import org.researchandreview.projecttsbackend.dto.TaskResponse;
 import org.researchandreview.projecttsbackend.model.Task;
 import org.researchandreview.projecttsbackend.service.TaskService;
@@ -31,45 +32,30 @@ public class TaskController {
         this.taskService = taskService;
     }
 
-    @GetMapping("/create")
-    public ResponseEntity<GeneralReponse> taskCreateFromUser() {
-        GeneralReponse generalReponse = new GeneralReponse("LLALD");
-        log.info(generalReponse.getMessage());
-        log.info(UUIDGenerator.generateUUID());
-        return new ResponseEntity<>(generalReponse, HttpStatus.OK);
-    }
-
-    @PostMapping("/param-test")
-    public ResponseEntity<GeneralReponse> taskCreateFromUserParam(@RequestParam String hello, @RequestParam int k) {
-        log.info(String.valueOf(k));
-        return new ResponseEntity<>(new GeneralReponse(hello), HttpStatus.OK);
-    }
-
-    @PostMapping("/body-test")
-    public ResponseEntity<GeneralReponse> taskCreateFromUserBody(@ModelAttribute GeneralRequest request) {
-        log.info(String.valueOf(request.getTest2()));
-        return new ResponseEntity<>(new GeneralReponse(request.getTest()), HttpStatus.OK);
-    }
-
     @GetMapping("/all")
     public ResponseEntity<TaskResponse> taskAll() {
         List<Task> taskList = taskService.getAllTasks();
+        log.info(taskList.toString());
         TaskResponse taskResponse = new TaskResponse("Successfully created.", taskList.get(0));
         return new ResponseEntity<>(taskResponse, HttpStatus.OK);
     }
 
     @PostMapping("/hello")
     public ResponseEntity<GeneralReponse> createMessage(@RequestBody GeneralRequest request) {
-        taskService.sendMessage(request.getTest());
+        //taskService.sendMessage(request.getTest());
         return new ResponseEntity<>(new GeneralReponse("OK"), HttpStatus.OK);
 
     }
 
-    @PostMapping(path="/image/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<GeneralReponse> taskUpload(@RequestPart String name, @RequestPart MultipartFile file) {
+    @PostMapping(path="/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<GeneralReponse> taskUpload(@RequestPart int x, @RequestPart int y, @RequestPart MultipartFile file,
+                                                     @RequestHeader(name = "x-uuid") String uuid) {
         try {
             FileIOManager.saveMultipartFileToLocal(file);
-            return ResponseEntity.ok(new GeneralReponse("Image Saved"));
+            int createdTaskId = taskService.createOneTask(file, uuid,x,y); // DB Update
+
+            taskService.createTaskMessage(createdTaskId); // send to AI Task Distributor
+            return ResponseEntity.ok(new TaskCreateSuccessfulResponse("Task Created", createdTaskId));
         } catch (Exception e) {
             return new ResponseEntity<>(new GeneralReponse(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
