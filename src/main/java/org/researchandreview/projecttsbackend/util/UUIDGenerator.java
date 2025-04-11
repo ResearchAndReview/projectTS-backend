@@ -6,7 +6,7 @@ import java.util.UUID;
 
 @NoArgsConstructor
 public class UUIDGenerator {
-    public static String generateUUID(){
+    public static String generateUUID() {
         return UUID.randomUUID().toString();
     }
 }

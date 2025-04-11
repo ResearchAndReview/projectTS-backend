@@ -14,10 +14,10 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorizeRequests ->
-                authorizeRequests
-                        .requestMatchers("/**")
-                        .permitAll()
-        )
+                        authorizeRequests
+                                .requestMatchers("/**")
+                                .permitAll()
+                )
                 .csrf(AbstractHttpConfigurer::disable);
 
         return http.build();

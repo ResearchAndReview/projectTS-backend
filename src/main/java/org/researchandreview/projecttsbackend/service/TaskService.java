@@ -1,11 +1,12 @@
 package org.researchandreview.projecttsbackend.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.javassist.NotFoundException;
 import org.researchandreview.projecttsbackend.RabbitConfig;
 import org.researchandreview.projecttsbackend.mapper.ImageMapper;
+import org.researchandreview.projecttsbackend.mapper.TaskMapper;
 import org.researchandreview.projecttsbackend.model.Image;
 import org.researchandreview.projecttsbackend.model.Task;
-import org.researchandreview.projecttsbackend.mapper.TaskMapper;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -33,10 +32,10 @@ public class TaskService {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    public int createOneTask(MultipartFile imageFile, String uuid, int x, int y) throws Exception {
+    public int createOneTask(MultipartFile imageFile, String uuid, int x, int y, String translateFrom, String translateTo) throws Exception {
         Task task = new Task();
-        task.setTranslateTo("kr");
-        task.setTranslateFrom("jp");
+        task.setTranslateTo(translateTo);
+        task.setTranslateFrom(translateFrom);
         task.setOwnerNodeId(uuid);
         taskMapper.insertOneTask(task);
 
@@ -65,7 +64,15 @@ public class TaskService {
         return taskMapper.findAllTasks();
     }
 
-    public void createTaskMessage(int taskId){
+    public Task getTaskById(int id, String uuid) throws NotFoundException {
+        try {
+            return taskMapper.findOneTaskById(id, uuid);
+        } catch (Exception e) {
+            throw new NotFoundException(id + "에 해당하는 Task 없음");
+        }
+    }
+
+    public void createTaskMessage(int taskId) {
         Message message = new Message(String.valueOf(taskId).getBytes());
         rabbitTemplate.send(RabbitConfig.QUEUE_NAME, message);
     }

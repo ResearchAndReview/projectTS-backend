@@ -8,5 +8,8 @@ import java.util.List;
 @Mapper
 public interface TaskMapper {
     List<Task> findAllTasks();
+
     int insertOneTask(Task task);
+
+    Task findOneTaskById(int id, String uuid);
 }

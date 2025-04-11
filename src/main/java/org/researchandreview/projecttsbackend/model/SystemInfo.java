@@ -2,8 +2,6 @@ package org.researchandreview.projecttsbackend.model;
 
 import lombok.Data;
 
-import java.sql.Timestamp;
-
 @Data
 public class SystemInfo {
     private Integer id;
