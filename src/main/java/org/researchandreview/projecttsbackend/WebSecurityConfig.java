@@ -28,12 +28,13 @@ public class WebSecurityConfig {
         config.setAllowedOrigins(List.of("*")); // 허용 Origin
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
         config.setAllowedHeaders(List.of("*", "x-uuid"));
-        config.setAllowCredentials(true);
+        //config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
     }
+
 
 
     @Bean
