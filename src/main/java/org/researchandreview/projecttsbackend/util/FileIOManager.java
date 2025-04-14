@@ -9,12 +9,13 @@ import java.io.IOException;
 @Slf4j
 public class FileIOManager {
     public static void saveMultipartFileToLocal(MultipartFile file) throws IOException {
-        String uploadDir = System.getenv("TEMP_IMG_FOLDER");
+        String uploadDir = System.getenv("TEMP_IMG_FOLDER").trim();
         //log.info("uploadDir: " + uploadDir);
         String fileName = file.getOriginalFilename();
         long size = file.getSize();
         //log.info("fileName: " + fileName);
         //log.info("size: " + size);
+
 
         File dir = new File(uploadDir);
         if (!dir.exists()) {
