@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.researchandreview.projecttsbackend.mapper.OCRResultMapper">
+    <select id="findOCRResultById" resultType="OCRResult" parameterType="long">
+        SELECT * FROM OCRResult where id=#{id} order by id;
+    </select>
+    <select id="findOCRResultsByOCRTaskId" resultType="OCRResult" parameterType="long">
+        SELECT * FROM OCRResult where ocrTaskId=#{ocrTaskId} order by id;
+    </select>
+    <select id="findOCRResultsByTaskId" resultType="OCRResult" parameterType="long">
+        SELECT * FROM OCRResult
+        JOIN OCRTask
+        ON OCRResult.ocrTaskId = OCRTask.id
+        AND OCRTask.taskId = #{taskId}
+        order by OCRResult.id
+    </select>
+
+    <select id="findOCRResultsWithTransResultByTaskId" resultType="ResultData" parameterType="long">
+        SELECT ocrResultId,
+               TransTaskResult.id as transResultId,
+               x,y, width, height, TransTaskResult.originalText as originalText,
+               translatedText, translateFrom, translateTo
+               FROM OCRResult
+        JOIN OCRTask
+        ON OCRResult.ocrTaskId = OCRTask.id AND OCRTask.taskId=#{taskId}
+        JOIN TransTaskResult
+        ON OCRResult.id = TransTaskResult.ocrResultId
+        order by OCRResult.id
+    </select>
+
+    <!--<update id="update" parameterType="com.example.myapp.model.User">
+        UPDATE users SET name=#{name}, email=#{email} WHERE id=#{id}
+    </update>-->
+</mapper>

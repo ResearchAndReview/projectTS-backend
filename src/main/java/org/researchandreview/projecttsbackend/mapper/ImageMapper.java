@@ -6,4 +6,7 @@ import org.researchandreview.projecttsbackend.model.Image;
 @Mapper
 public interface ImageMapper {
     int insertOneImage(Image image);
+
+    Image findImageByTaskId(long taskId);
+
 }

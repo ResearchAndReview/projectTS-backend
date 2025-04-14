@@ -11,5 +11,5 @@ public interface TaskMapper {
 
     int insertOneTask(Task task);
 
-    Task findOneTaskById(int id, String uuid);
+    Task findOneTaskById(long id, String uuid);
 }

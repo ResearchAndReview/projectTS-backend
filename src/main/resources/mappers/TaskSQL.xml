@@ -7,10 +7,10 @@
         SELECT * FROM Task;
     </select>
     <select id="findOneTaskById" resultType="Task" parameterType="map">
-        SELECT * FROM Task where id=#{id} AND owner_node_id=#{uuid};
+        SELECT * FROM Task where id=#{id} AND ownerNodeId=#{uuid};
     </select>
     <select id="findTasksByNodeId" resultType="Task" parameterType="string">
-        SELECT * FROM Task where working_node_id=#{workingNodeId};
+        SELECT * FROM Task where workingNodeId=#{workingNodeId};
     </select>
     <select id="findTasksByStatusSuccess" resultType="Task">
         SELECT * FROM Task where status="SUCCESS";
@@ -31,6 +31,7 @@
         INSERT INTO Task (working_node_id, owner_node_id, status, created_at, updated_at, fail_cause, translate_from, translate_to)
         VALUES (null, #{ownerNodeId},DEFAULT,  DEFAULT, DEFAULT, null, #{translateFrom}, #{translateTo});
     </insert>
+
    <!-- <resultMap id="userResultMap" type="com.example.myapp.model.User">
         <id property="id" column="id"/>
         <result property="name" column="name"/>

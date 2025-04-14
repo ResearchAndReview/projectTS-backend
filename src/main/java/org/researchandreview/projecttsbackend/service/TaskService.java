@@ -4,9 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.javassist.NotFoundException;
 import org.researchandreview.projecttsbackend.RabbitConfig;
 import org.researchandreview.projecttsbackend.mapper.ImageMapper;
+import org.researchandreview.projecttsbackend.mapper.OCRResultMapper;
 import org.researchandreview.projecttsbackend.mapper.TaskMapper;
-import org.researchandreview.projecttsbackend.model.Image;
-import org.researchandreview.projecttsbackend.model.Task;
+import org.researchandreview.projecttsbackend.mapper.TransResultMapper;
+import org.researchandreview.projecttsbackend.model.*;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -23,12 +26,16 @@ public class TaskService {
 
     private final TaskMapper taskMapper;
     private final ImageMapper imageMapper;
+    private final OCRResultMapper ocrResultMapper;
+    private final TransResultMapper transResultMapper;
     private final RabbitTemplate rabbitTemplate;
 
     @Autowired
-    public TaskService(TaskMapper taskMapper, ImageMapper imageMapper, RabbitTemplate rabbitTemplate) {
+    public TaskService(TaskMapper taskMapper, ImageMapper imageMapper, OCRResultMapper ocrResultMapper, TransResultMapper transResultMapper, RabbitTemplate rabbitTemplate) {
         this.taskMapper = taskMapper;
         this.imageMapper = imageMapper;
+        this.ocrResultMapper = ocrResultMapper;
+        this.transResultMapper = transResultMapper;
         this.rabbitTemplate = rabbitTemplate;
     }
 
@@ -59,9 +66,17 @@ public class TaskService {
         return task.getId();
     }
 
+    public Map<String, Object> handleSuccessTask(Task task) throws Exception {
+        int taskId = task.getId();
 
-    public List<Task> getAllTasks() {
-        return taskMapper.findAllTasks();
+        HashMap<String, Object> result = new HashMap<>();
+
+        Image image = imageMapper.findImageByTaskId(taskId);
+        List<ResultData> taskResults = ocrResultMapper.findOCRResultsWithTransResultByTaskId(taskId);
+        result.put("task", task);
+        result.put("image", image);
+        result.put("taskResults", taskResults);
+        return result;
     }
 
     public Task getTaskById(int id, String uuid) throws NotFoundException {

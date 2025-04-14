@@ -6,11 +6,11 @@
     <select id="findImageById" resultType="Image">
         SELECT * FROM Image WHERE id=#{id};
     </select>
-    <select id="findImagesByTaskId" resultType="Image">
-        SELECT * FROM Image WHERE task_id=#{taskId};
+    <select id="findImageByTaskId" resultType="Image">
+        SELECT * FROM Image WHERE taskId=#{taskId};
     </select>
     <insert id="insertOneImage" parameterType="org.researchandreview.projecttsbackend.model.Image" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO projectts.Image (task_id, x, y, width, height, image_url, created_at)
+        INSERT INTO projectts.Image (taskId, x, y, width, height, imageUrl, createdAt)
         VALUES (#{taskId}, #{x}, #{y}, #{width}, #{height}, #{imageUrl}, DEFAULT);
     </insert>
 </mapper>

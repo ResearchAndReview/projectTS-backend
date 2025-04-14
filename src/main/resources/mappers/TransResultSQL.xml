@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.researchandreview.projecttsbackend.mapper.TransResultMapper">
+    <select id="findTransResultById" resultType="TransTaskResult" parameterType="long">
+        SELECT * FROM TransTaskResult where id=#{id} order by id;
+    </select>
+
+    <select id="findTransResultsByOCRTaskId" resultType="TransTaskResult" parameterType="long">
+        SELECT * FROM TransTaskResult where ocrResultId=#{ocrResultId} order by id;
+    </select>
+    <select id="findTransResultsByTaskId" resultType="TransTaskResult" parameterType="long">
+        SELECT * FROM TransTaskResult
+        JOIN OCRResult
+        ON OCRResult.ocrTaskId = TransTaskResult.id
+        JOIN OCRTask
+        ON OCRResult.ocrTaskId = OCRTask.id
+        AND OCRTask.taskId = #{taskId}
+        order by TransTaskResult.id
+    </select>
+
+    <!--<update id="update" parameterType="com.example.myapp.model.User">
+        UPDATE users SET name=#{name}, email=#{email} WHERE id=#{id}
+    </update>-->
+</mapper>

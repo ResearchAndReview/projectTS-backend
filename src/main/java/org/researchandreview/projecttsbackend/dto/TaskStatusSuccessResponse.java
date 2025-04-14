@@ -1,20 +1,18 @@
 package org.researchandreview.projecttsbackend.dto;
 
 import lombok.Getter;
-import org.researchandreview.projecttsbackend.model.OCRResult;
 import org.researchandreview.projecttsbackend.model.Task;
-import org.researchandreview.projecttsbackend.model.TransTaskResult;
+import org.researchandreview.projecttsbackend.model.ResultData;
 
 import java.util.List;
+import java.util.Map;
 
 @Getter
 public class TaskStatusSuccessResponse extends TaskStatusResponse {
-    private final List<OCRResult> ocrResults;
-    private final List<TransTaskResult> transTaskResults;
+    private final Map<String, Object> resultData;
 
-    public TaskStatusSuccessResponse(Task task, List<OCRResult> ocrResults, List<TransTaskResult> transResults) {
+    public TaskStatusSuccessResponse(Task task, Map<String, Object> resultData) {
         super(task);
-        this.ocrResults = ocrResults;
-        this.transTaskResults = transResults;
+        this.resultData = resultData;
     }
 }

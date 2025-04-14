@@ -70,7 +70,7 @@ public class TaskController {
                 request.getY(),
                 request.getTranslateFrom(),
                 request.getTranslateTo()); // DB Update
-        taskService.createTaskMessage(createdTaskId); // send to AI Task Distributor
+        //taskService.createTaskMessage(createdTaskId); // send to AI Task Distributor
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new TaskCreateSuccessResponse("Task successfully created", createdTaskId));
     }
@@ -86,7 +86,7 @@ public class TaskController {
     public ResponseEntity<?> getTaskStatus(
             @RequestParam int taskId,
             @RequestHeader(name = "x-uuid") String uuid
-    ) throws NotFoundException {
+    ) throws Exception {
         Task task = taskService.getTaskById(taskId, uuid);
         if (task == null) {
             throw new NotFoundException(taskId + " 작업을 찾을 수 없음");
@@ -95,7 +95,7 @@ public class TaskController {
         return switch (task.getStatus()) {
             case "SUCCESS" -> new ResponseEntity<TaskStatusSuccessResponse>(
                     new TaskStatusSuccessResponse(
-                            task, null, null),
+                            task, taskService.handleSuccessTask(task)),
                     HttpStatus.OK);
             case "FAILED" -> new ResponseEntity<TaskStatusFailedResponse>(
                     new TaskStatusFailedResponse(
