@@ -23,6 +23,7 @@ public class WebSecurityConfig {
         config.setAllowedOrigins(List.of("http://js.thxx.xyz")); // 허용 Origin
         config.setAllowedOrigins(List.of("https://js.thxx.xyz")); // 허용 Origin
         config.setAllowedOrigins(List.of("http://localhost:8080")); // 허용 Origin
+        config.setAllowedOrigins(List.of("chrome-extension://mkpijdockceklmbengaklappippglihh")); // 허용 Origin
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
         config.setAllowedHeaders(List.of("*", "x-uuid"));
         config.setAllowCredentials(true);
