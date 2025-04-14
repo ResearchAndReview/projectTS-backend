@@ -28,7 +28,7 @@
             useGeneratedKeys="true"
             keyProperty="id"
     >
-        INSERT INTO Task (working_node_id, owner_node_id, status, created_at, updated_at, fail_cause, translate_from, translate_to)
+        INSERT INTO Task (workingNodeId, ownerNodeId, status, createdAt, updatedAt, failCause, translateFrom, translateTo)
         VALUES (null, #{ownerNodeId},DEFAULT,  DEFAULT, DEFAULT, null, #{translateFrom}, #{translateTo});
     </insert>
 

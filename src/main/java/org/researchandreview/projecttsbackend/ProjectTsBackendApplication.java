@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @OpenAPIDefinition(servers = {
         @Server(url = "https://js.thxx.xyz", description = "HTTPS (Secure)"),
         @Server(url = "http://js.thxx.xyz", description = "HTTP (Insecure)"),
-        @Server(url = "http://127.0.0.1:8080", description = "LOCAL")
+        @Server(url = "http://localhost:8080", description = "LOCAL")
 })
 @SpringBootApplication
 public class ProjectTsBackendApplication {
