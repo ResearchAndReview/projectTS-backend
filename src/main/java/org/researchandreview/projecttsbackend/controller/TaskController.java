@@ -70,7 +70,7 @@ public class TaskController {
                 request.getY(),
                 request.getTranslateFrom(),
                 request.getTranslateTo()); // DB Update
-        //taskService.createTaskMessage(createdTaskId); // send to AI Task Distributor
+        taskService.createTaskMessage(createdTaskId); // send to AI Task Distributor
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new TaskCreateSuccessResponse("Task successfully created", createdTaskId));
     }
