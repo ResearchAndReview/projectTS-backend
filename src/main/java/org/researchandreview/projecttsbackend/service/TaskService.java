@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -87,9 +88,13 @@ public class TaskService {
         }
     }
 
-    public void createTaskMessage(int taskId) {
+    public void createTaskMessage(MultipartFile file, int taskId) {
         try{
-            Message message = new Message(String.valueOf(taskId).getBytes());
+            byte[] fileBytes = file.getBytes();
+            String base64Encoded = Base64.getEncoder().encodeToString(fileBytes);
+
+
+            Message message = new Message(base64Encoded.getBytes());
             rabbitTemplate.send(RabbitConfig.QUEUE_NAME, message);
         }
         catch(Exception e){
