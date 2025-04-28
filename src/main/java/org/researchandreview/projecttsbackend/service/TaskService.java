@@ -88,7 +88,12 @@ public class TaskService {
     }
 
     public void createTaskMessage(int taskId) {
-        Message message = new Message(String.valueOf(taskId).getBytes());
-        rabbitTemplate.send(RabbitConfig.QUEUE_NAME, message);
+        try{
+            Message message = new Message(String.valueOf(taskId).getBytes());
+            rabbitTemplate.send(RabbitConfig.QUEUE_NAME, message);
+        }
+        catch(Exception e){
+            log.info(e.getMessage());
+        }
     }
 }
