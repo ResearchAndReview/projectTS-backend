@@ -3,7 +3,6 @@ package org.researchandreview.projecttsbackend.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.researchandreview.projecttsbackend.dto.GeneralRequest;
 import org.researchandreview.projecttsbackend.dto.GeneralResponse;
-import org.researchandreview.projecttsbackend.dto.NodeRegisterResponse;
 import org.researchandreview.projecttsbackend.dto.NodeRegisterSuccessResponse;
 import org.researchandreview.projecttsbackend.util.UUIDGenerator;
 import org.springframework.http.HttpStatus;
