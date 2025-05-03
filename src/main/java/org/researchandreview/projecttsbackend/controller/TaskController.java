@@ -112,13 +112,43 @@ public class TaskController {
         };
     }
 
-    @PostMapping("/update")
-    public ResponseEntity<GeneralResponse> postTaskUpdate(@RequestParam int taskId, @RequestBody GeneralRequest request) {
-        return new ResponseEntity<>(new GeneralResponse("OK"), HttpStatus.OK);
+    @PostMapping("/notify/ocr-success")
+    public ResponseEntity<?> postNotifyOCRSuccess(
+            @RequestParam int taskId,
+            @RequestBody TaskNotifyOCRSuccessRequest request
+    ) throws Exception {
+        Task task = taskService.getTaskById(taskId, "");
+        if (task == null) {
+            throw new NotFoundException(taskId + " 작업을 찾을 수 없음");
+        }
+        log.info(task.toString());
+        return switch (task.getStatus()) {
+            case "SUCCESS" -> new ResponseEntity<TaskStatusSuccessResponse>(
+                    new TaskStatusSuccessResponse(
+                            task, taskService.handleSuccessTask(task)),
+                    HttpStatus.OK);
+            case "FAILED" -> new ResponseEntity<TaskStatusFailedResponse>(
+                    new TaskStatusFailedResponse(
+                            task
+                    ),
+                    HttpStatus.OK
+            );
+            default -> new ResponseEntity<TaskStatusResponse>(
+                    new TaskStatusResponse(
+                            task
+                    ),
+                    HttpStatus.OK
+            );
+        };
     }
 
-    @PostMapping("/recovery")
-    public ResponseEntity<GeneralResponse> postTaskRecovery(@RequestParam int taskId, @RequestBody GeneralRequest request) {
-        return new ResponseEntity<>(new GeneralResponse("OK"), HttpStatus.OK);
-    }
+//    @PostMapping("/update")
+//    public ResponseEntity<GeneralResponse> postTaskUpdate(@RequestParam int taskId, @RequestBody GeneralRequest request) {
+//        return new ResponseEntity<>(new GeneralResponse("OK"), HttpStatus.OK);
+//    }
+//
+//    @PostMapping("/recovery")
+//    public ResponseEntity<GeneralResponse> postTaskRecovery(@RequestParam int taskId, @RequestBody GeneralRequest request) {
+//        return new ResponseEntity<>(new GeneralResponse("OK"), HttpStatus.OK);
+//    }
 }

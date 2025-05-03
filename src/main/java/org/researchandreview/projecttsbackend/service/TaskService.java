@@ -88,6 +88,14 @@ public class TaskService {
         }
     }
 
+    public Task getTaskByIdAdmin(int id, String uuid) throws NotFoundException {
+        try {
+            return taskMapper.findOneTaskById(id, uuid);
+        } catch (Exception e) {
+            throw new NotFoundException(id + "에 해당하는 Task 없음");
+        }
+    }
+
     public void createTaskMessage(MultipartFile file, int taskId) {
         try{
             byte[] fileBytes = file.getBytes();

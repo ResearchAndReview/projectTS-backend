@@ -9,6 +9,9 @@
     <select id="findOneTaskById" resultType="Task" parameterType="map">
         SELECT * FROM Task where id=#{id} AND ownerNodeId=#{uuid};
     </select>
+    <select id="findOneTaskByIdAdmin" resultType="Task" parameterType="long">
+        SELECT * FROM Task where id=#{id};
+    </select>
     <select id="findTasksByNodeId" resultType="Task" parameterType="string">
         SELECT * FROM Task where workingNodeId=#{workingNodeId};
     </select>
