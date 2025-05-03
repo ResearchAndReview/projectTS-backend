@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.researchandreview.projecttsbackend.mapper.OCRTaskMapper">
+<!--    <select id="findOCRResultById" resultType="OCRResult" parameterType="long">-->
+<!--        SELECT * FROM OCRResult where id=#{id} order by id;-->
+<!--    </select>-->
+
+    <insert id="insertOneOCRTask"
+            parameterType="org.researchandreview.projecttsbackend.model.OCRTask"
+            useGeneratedKeys="true"
+            keyProperty="id"
+    >
+        INSERT INTO OCRTask (taskId, failCause, status, createdAt, updatedAt)
+        VALUES (#{taskId}, null, DEFAULT, DEFAULT, DEFAULT);
+    </insert>
+
+    <!--<update id="update" parameterType="com.example.myapp.model.User">
+        UPDATE users SET name=#{name}, email=#{email} WHERE id=#{id}
+    </update>-->
+</mapper>

@@ -8,7 +8,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.javassist.NotFoundException;
 import org.researchandreview.projecttsbackend.dto.*;
+import org.researchandreview.projecttsbackend.model.Caption;
+import org.researchandreview.projecttsbackend.model.OCRTask;
 import org.researchandreview.projecttsbackend.model.Task;
+import org.researchandreview.projecttsbackend.service.OCRTaskService;
 import org.researchandreview.projecttsbackend.service.TaskService;
 import org.researchandreview.projecttsbackend.util.FileIOManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +28,12 @@ import org.springframework.web.multipart.MultipartFile;
 public class TaskController {
 
     private final TaskService taskService;
+    private final OCRTaskService ocrTaskService;
 
     @Autowired
-    public TaskController(TaskService taskService) {
+    public TaskController(TaskService taskService, OCRTaskService ocrTaskService) {
         this.taskService = taskService;
+        this.ocrTaskService = ocrTaskService;
     }
 /*
     @GetMapping("/all")
@@ -66,8 +71,8 @@ public class TaskController {
         int createdTaskId = taskService.createOneTask(
                 file,
                 uuid,
-                request.getX(),
-                request.getY(),
+                0,
+                0,
                 request.getTranslateFrom(),
                 request.getTranslateTo()); // DB Update
         taskService.createTaskMessage(file, createdTaskId); // send to AI Task Distributor
@@ -92,6 +97,7 @@ public class TaskController {
             throw new NotFoundException(taskId + " 작업을 찾을 수 없음");
         }
         log.info(task.toString());
+
         return switch (task.getStatus()) {
             case "SUCCESS" -> new ResponseEntity<TaskStatusSuccessResponse>(
                     new TaskStatusSuccessResponse(
@@ -117,29 +123,17 @@ public class TaskController {
             @RequestParam int taskId,
             @RequestBody TaskNotifyOCRSuccessRequest request
     ) throws Exception {
-        Task task = taskService.getTaskById(taskId, "");
+        Task task = taskService.getTaskByIdAdmin(taskId);
         if (task == null) {
             throw new NotFoundException(taskId + " 작업을 찾을 수 없음");
         }
-        log.info(task.toString());
-        return switch (task.getStatus()) {
-            case "SUCCESS" -> new ResponseEntity<TaskStatusSuccessResponse>(
-                    new TaskStatusSuccessResponse(
-                            task, taskService.handleSuccessTask(task)),
-                    HttpStatus.OK);
-            case "FAILED" -> new ResponseEntity<TaskStatusFailedResponse>(
-                    new TaskStatusFailedResponse(
-                            task
-                    ),
-                    HttpStatus.OK
-            );
-            default -> new ResponseEntity<TaskStatusResponse>(
-                    new TaskStatusResponse(
-                            task
-                    ),
-                    HttpStatus.OK
-            );
-        };
+        // log.info(task.toString());
+        int ocrTaskId = ocrTaskService.createOCRTask(taskId);
+        for(Caption caption : request.getCaptions()) {
+
+        }
+
+        return new ResponseEntity<GeneralResponse>(new GeneralResponse("OCR Succes Reported"), HttpStatus.OK);
     }
 
 //    @PostMapping("/update")

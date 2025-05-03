@@ -1,5 +1,6 @@
 package org.researchandreview.projecttsbackend.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.javassist.NotFoundException;
 import org.researchandreview.projecttsbackend.RabbitConfig;
@@ -30,14 +31,16 @@ public class TaskService {
     private final OCRResultMapper ocrResultMapper;
     private final TransResultMapper transResultMapper;
     private final RabbitTemplate rabbitTemplate;
+    private final ObjectMapper objectMapper;
 
     @Autowired
-    public TaskService(TaskMapper taskMapper, ImageMapper imageMapper, OCRResultMapper ocrResultMapper, TransResultMapper transResultMapper, RabbitTemplate rabbitTemplate) {
+    public TaskService(TaskMapper taskMapper, ImageMapper imageMapper, OCRResultMapper ocrResultMapper, TransResultMapper transResultMapper, RabbitTemplate rabbitTemplate, ObjectMapper objectMapper) {
         this.taskMapper = taskMapper;
         this.imageMapper = imageMapper;
         this.ocrResultMapper = ocrResultMapper;
         this.transResultMapper = transResultMapper;
         this.rabbitTemplate = rabbitTemplate;
+        this.objectMapper = objectMapper;
     }
 
     public int createOneTask(MultipartFile imageFile, String uuid, int x, int y, String translateFrom, String translateTo) throws Exception {
@@ -88,9 +91,9 @@ public class TaskService {
         }
     }
 
-    public Task getTaskByIdAdmin(int id, String uuid) throws NotFoundException {
+    public Task getTaskByIdAdmin(int id) throws NotFoundException {
         try {
-            return taskMapper.findOneTaskById(id, uuid);
+            return taskMapper.findOneTaskByIdAdmin(id);
         } catch (Exception e) {
             throw new NotFoundException(id + "에 해당하는 Task 없음");
         }
@@ -100,10 +103,10 @@ public class TaskService {
         try{
             byte[] fileBytes = file.getBytes();
             String base64Encoded = Base64.getEncoder().encodeToString(fileBytes);
+            TaskMessage taskMessage = new TaskMessage(taskId, base64Encoded);
+            String jsonMessage = objectMapper.writeValueAsString(taskMessage);
 
-
-            Message message = new Message(base64Encoded.getBytes());
-            rabbitTemplate.send(RabbitConfig.QUEUE_NAME, message);
+            rabbitTemplate.convertAndSend(RabbitConfig.QUEUE_NAME, jsonMessage);
         }
         catch(Exception e){
             log.info(e.getMessage());
