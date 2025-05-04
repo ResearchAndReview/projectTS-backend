@@ -1,12 +1,8 @@
 package org.researchandreview.projecttsbackend.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.researchandreview.projecttsbackend.mapper.OCRTaskMapper;
-import org.researchandreview.projecttsbackend.mapper.TaskMapper;
 import org.researchandreview.projecttsbackend.mapper.TransResultMapper;
-import org.researchandreview.projecttsbackend.model.OCRTask;
 import org.researchandreview.projecttsbackend.model.TransTaskResult;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,12 +11,18 @@ import org.springframework.stereotype.Service;
 public class TransTaskService {
 
     private final TransResultMapper transResultMapper;
-    private final RabbitTemplate rabbitTemplate;
 
     @Autowired
-    public TransTaskService(TransResultMapper transResultMapper, RabbitTemplate rabbitTemplate) {
+    public TransTaskService(TransResultMapper transResultMapper) {
         this.transResultMapper = transResultMapper;
-        this.rabbitTemplate = rabbitTemplate;
+    }
+
+    public TransTaskResult getTransTaskById(int id) {
+        return transResultMapper.findTransResultById(id);
+    }
+
+    public void updateTransTask(TransTaskResult transTask) {
+        transResultMapper.updateOneTransTask(transTask);
     }
 
     public int createTransTask(int ocrResultId, String originalText, String translateFrom, String translateTo) {

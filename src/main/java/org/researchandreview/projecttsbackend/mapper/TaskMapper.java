@@ -9,9 +9,11 @@ import java.util.List;
 public interface TaskMapper {
     List<Task> findAllTasks();
 
-    int insertOneTask(Task task);
+    void insertOneTask(Task task);
 
     Task findOneTaskById(long id, String uuid);
 
     Task findOneTaskByIdAdmin(long id);
+
+    void updateOneTask(Task task);
 }

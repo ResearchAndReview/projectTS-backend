@@ -1,22 +1,14 @@
 package org.researchandreview.projecttsbackend.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.javassist.NotFoundException;
-import org.researchandreview.projecttsbackend.RabbitConfig;
-import org.researchandreview.projecttsbackend.mapper.*;
-import org.researchandreview.projecttsbackend.model.*;
-import org.springframework.amqp.core.Message;
+import org.researchandreview.projecttsbackend.mapper.OCRResultMapper;
+import org.researchandreview.projecttsbackend.mapper.OCRTaskMapper;
+import org.researchandreview.projecttsbackend.mapper.TaskMapper;
+import org.researchandreview.projecttsbackend.model.OCRResult;
+import org.researchandreview.projecttsbackend.model.OCRTask;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @Service
@@ -35,8 +27,12 @@ public class OCRTaskService {
         this.ocrResultMapper = ocrResultMapper;
     }
 
-    public OCRTask getOCRTaskById(String taskId) {
-        //ocrTaskMapper.
+    public OCRTask getOCRTaskById(int id) {
+        return ocrTaskMapper.findOneOCRTaskById(id);
+    }
+
+    public void updateOCRTask(OCRTask ocrTask) {
+        ocrTaskMapper.updateOneOCRTask(ocrTask);
     }
 
     public int createOCRTask(int taskId) {
@@ -47,7 +43,7 @@ public class OCRTaskService {
         return ocrTask.getId();
     }
 
-    public int createOCRResult(int ocrTaskId, int x, int y, int width, int height){
+    public int createOCRResult(int ocrTaskId, int x, int y, int width, int height) {
         OCRResult ocrResult = new OCRResult();
         ocrResult.setOcrTaskId(ocrTaskId);
         ocrResult.setX(x);

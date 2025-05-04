@@ -8,8 +8,10 @@ import org.researchandreview.projecttsbackend.mapper.ImageMapper;
 import org.researchandreview.projecttsbackend.mapper.OCRResultMapper;
 import org.researchandreview.projecttsbackend.mapper.TaskMapper;
 import org.researchandreview.projecttsbackend.mapper.TransResultMapper;
-import org.researchandreview.projecttsbackend.model.*;
-import org.springframework.amqp.core.Message;
+import org.researchandreview.projecttsbackend.model.Image;
+import org.researchandreview.projecttsbackend.model.ResultData;
+import org.researchandreview.projecttsbackend.model.Task;
+import org.researchandreview.projecttsbackend.model.TaskMessage;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -77,6 +79,20 @@ public class TaskService {
 
         Image image = imageMapper.findImageByTaskId(taskId);
         List<ResultData> taskResults = ocrResultMapper.findOCRResultsWithTransResultByTaskId(taskId);
+        boolean isCompleted = true;
+        for (ResultData resultData : taskResults) {
+            if (resultData.getTranslatedText() == null) {
+                isCompleted = false;
+                break;
+            }
+        }
+        if (isCompleted) {
+            task.setStatus("SUCCESS");
+            taskMapper.updateOneTask(task);
+        } else {
+            task.setStatus("PROCESSING");
+            taskMapper.updateOneTask(task);
+        }
         result.put("task", task);
         result.put("image", image);
         result.put("taskResults", taskResults);
@@ -100,15 +116,14 @@ public class TaskService {
     }
 
     public void createTaskMessage(MultipartFile file, int taskId, int ocrTaskId) {
-        try{
+        try {
             byte[] fileBytes = file.getBytes();
             String base64Encoded = Base64.getEncoder().encodeToString(fileBytes);
             TaskMessage taskMessage = new TaskMessage(taskId, ocrTaskId, base64Encoded);
             String jsonMessage = objectMapper.writeValueAsString(taskMessage);
 
             rabbitTemplate.convertAndSend(RabbitConfig.QUEUE_NAME, jsonMessage);
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             log.info(e.getMessage());
         }
     }

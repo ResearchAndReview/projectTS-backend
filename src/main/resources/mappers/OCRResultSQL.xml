@@ -4,29 +4,42 @@
 
 <mapper namespace="org.researchandreview.projecttsbackend.mapper.OCRResultMapper">
     <select id="findOCRResultById" resultType="OCRResult" parameterType="long">
-        SELECT * FROM OCRResult where id=#{id} order by id;
+        SELECT *
+        FROM OCRResult
+        where id = #{id}
+        order by id;
     </select>
     <select id="findOCRResultsByOCRTaskId" resultType="OCRResult" parameterType="long">
-        SELECT * FROM OCRResult where ocrTaskId=#{ocrTaskId} order by id;
+        SELECT *
+        FROM OCRResult
+        where ocrTaskId = #{ocrTaskId}
+        order by id;
     </select>
     <select id="findOCRResultsByTaskId" resultType="OCRResult" parameterType="long">
-        SELECT * FROM OCRResult
-        JOIN OCRTask
-        ON OCRResult.ocrTaskId = OCRTask.id
-        AND OCRTask.taskId = #{taskId}
+        SELECT *
+        FROM OCRResult
+                 JOIN OCRTask
+                      ON OCRResult.ocrTaskId = OCRTask.id
+                          AND OCRTask.taskId = #{taskId}
         order by OCRResult.id
     </select>
 
     <select id="findOCRResultsWithTransResultByTaskId" resultType="ResultData" parameterType="long">
         SELECT ocrResultId,
-               TransTaskResult.id as transResultId,
-               x,y, width, height, TransTaskResult.originalText as originalText,
-               translatedText, translateFrom, translateTo
-               FROM OCRResult
-        JOIN OCRTask
-        ON OCRResult.ocrTaskId = OCRTask.id AND OCRTask.taskId=#{taskId}
-        JOIN TransTaskResult
-        ON OCRResult.id = TransTaskResult.ocrResultId
+               TransTaskResult.id           as transResultId,
+               x,
+               y,
+               width,
+               height,
+               TransTaskResult.originalText as originalText,
+               translatedText,
+               translateFrom,
+               translateTo
+        FROM OCRResult
+                 LEFT JOIN OCRTask
+                           ON OCRResult.ocrTaskId = OCRTask.id AND OCRTask.taskId = #{taskId}
+                 LEFT JOIN TransTaskResult
+                           ON OCRResult.id = TransTaskResult.ocrResultId
         order by OCRResult.id
     </select>
 

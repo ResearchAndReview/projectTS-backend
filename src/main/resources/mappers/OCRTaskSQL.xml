@@ -3,9 +3,14 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="org.researchandreview.projecttsbackend.mapper.OCRTaskMapper">
-<!--    <select id="findOCRResultById" resultType="OCRResult" parameterType="long">-->
-<!--        SELECT * FROM OCRResult where id=#{id} order by id;-->
-<!--    </select>-->
+    <!--    <select id="findOCRResultById" resultType="OCRResult" parameterType="long">-->
+    <!--        SELECT * FROM OCRResult where id=#{id} order by id;-->
+    <!--    </select>-->
+    <select id="findOneOCRTaskById" resultType="Task" parameterType="long">
+        SELECT *
+        FROM Task
+        where id = #{id};
+    </select>
 
     <insert id="insertOneOCRTask"
             parameterType="org.researchandreview.projecttsbackend.model.OCRTask"
@@ -20,7 +25,8 @@
             parameterType="org.researchandreview.projecttsbackend.model.OCRTask"
     >
         UPDATE projectts.OCRTask t
-        SET t.failCause=#{failCause}, t.status = #{status}
+        SET t.failCause=#{failCause},
+            t.status   = #{status}
         WHERE t.id = #{id};
     </update>
 

@@ -11,6 +11,7 @@ import org.researchandreview.projecttsbackend.dto.*;
 import org.researchandreview.projecttsbackend.model.Caption;
 import org.researchandreview.projecttsbackend.model.OCRTask;
 import org.researchandreview.projecttsbackend.model.Task;
+import org.researchandreview.projecttsbackend.model.TransTaskResult;
 import org.researchandreview.projecttsbackend.service.OCRTaskService;
 import org.researchandreview.projecttsbackend.service.TaskService;
 import org.researchandreview.projecttsbackend.service.TransTaskService;
@@ -96,7 +97,7 @@ public class TaskController {
                     content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
     })
     @GetMapping("/status")
-    public ResponseEntity<?> getTaskStatus(
+    public ResponseEntity<TaskStatusSuccessResponse> getTaskStatus(
             @RequestParam int taskId,
             @RequestHeader(name = "x-uuid") String uuid
     ) throws Exception {
@@ -105,8 +106,11 @@ public class TaskController {
             throw new NotFoundException(taskId + " 작업을 찾을 수 없음");
         }
         log.info(task.toString());
-
-        return switch (task.getStatus()) {
+        return new ResponseEntity<>(
+                new TaskStatusSuccessResponse(
+                        task, taskService.handleSuccessTask(task)),
+                HttpStatus.OK);
+        /*return switch (task.getStatus()) {
             case "SUCCESS" -> new ResponseEntity<TaskStatusSuccessResponse>(
                     new TaskStatusSuccessResponse(
                             task, taskService.handleSuccessTask(task)),
@@ -123,28 +127,49 @@ public class TaskController {
                     ),
                     HttpStatus.OK
             );
-        };
+        };*/
     }
 
     @PostMapping("/notify/ocr-success")
-    public ResponseEntity<?> postNotifyOCRSuccess(
+    public ResponseEntity<TaskNotifyOCRSuccessResponse> postNotifyOCRSuccess(
             @RequestParam int ocrTaskId,
             @RequestBody TaskNotifyOCRSuccessRequest request
     ) throws Exception {
-        OCRTask ocrTask = ocrTaskService.
-        if (task == null) {
-            throw new NotFoundException(taskId + " 작업을 찾을 수 없음");
+        OCRTask ocrTask = ocrTaskService.getOCRTaskById(ocrTaskId);
+        if (ocrTask == null) {
+            throw new NotFoundException(ocrTaskId + " OCR 작업을 찾을 수 없음");
         }
         // log.info(task.toString());
-
+        Task task = taskService.getTaskByIdAdmin(ocrTask.getTaskId());
 
         List<Integer> createdOCRResultId = new ArrayList<>();
-        for(Caption caption : request.getCaptions()) {
+        for (Caption caption : request.getCaptions()) {
             int ocrResultId = ocrTaskService.createOCRResult(ocrTaskId, caption.getX(), caption.getY(), caption.getWidth(), caption.getHeight());
             transTaskService.createTransTask(ocrResultId, caption.getText(), task.getTranslateFrom(), task.getTranslateTo());
         }
 
-        return new ResponseEntity<TaskNotifyOCRSuccessResponse>(new TaskNotifyOCRSuccessResponse(createdOCRResultId), HttpStatus.OK);
+        ocrTask.setStatus("SUCCESS");
+        ocrTaskService.updateOCRTask(ocrTask);
+
+        return new ResponseEntity<>(new TaskNotifyOCRSuccessResponse(createdOCRResultId), HttpStatus.OK);
+    }
+
+    @PostMapping("/notify/trans-success")
+    public ResponseEntity<GeneralResponse> postNotifyTransSuccess(
+            @RequestParam int transTaskId,
+            @RequestBody TaskNotifyTransSuccessRequest request
+    ) throws Exception {
+        TransTaskResult transTask = transTaskService.getTransTaskById(transTaskId);
+        if (transTask == null) {
+            throw new NotFoundException(transTaskId + " 번역 작업을 찾을 수 없음");
+        }
+        // log.info(task.toString());
+
+        transTask.setTranslatedText(request.getTranslatedText());
+        transTask.setStatus("SUCCESS");
+        transTaskService.updateTransTask(transTask);
+
+        return new ResponseEntity<>(new GeneralResponse("Trans Success Reported"), HttpStatus.OK);
     }
 
 //    @PostMapping("/update")
