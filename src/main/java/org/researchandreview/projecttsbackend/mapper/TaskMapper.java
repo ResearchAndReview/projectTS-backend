@@ -11,9 +11,9 @@ public interface TaskMapper {
 
     void insertOneTask(Task task);
 
-    Task findOneTaskById(long id, String uuid);
+    Task findOneTaskById(int id, String uuid);
 
-    Task findOneTaskByIdAdmin(long id);
+    Task findOneTaskByIdAdmin(int id);
 
     void updateOneTask(Task task);
 }
