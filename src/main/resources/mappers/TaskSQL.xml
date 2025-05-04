@@ -8,7 +8,7 @@
         FROM Task;
     </select>
     <select id="findOneTaskById" resultType="Task" parameterType="map">
-        SELECT id, status, failCause, translateFrom, translateTo
+        SELECT id, status, createdAt, updatedAt, failCause, translateFrom, translateTo
         FROM Task
         where id = #{id}
           AND ownerNodeId = #{uuid};
