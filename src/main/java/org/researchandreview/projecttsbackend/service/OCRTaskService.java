@@ -43,13 +43,14 @@ public class OCRTaskService {
         return ocrTask.getId();
     }
 
-    public int createOCRResult(int ocrTaskId, int x, int y, int width, int height) {
+    public int createOCRResult(int ocrTaskId, int x, int y, int width, int height, String originalText) {
         OCRResult ocrResult = new OCRResult();
         ocrResult.setOcrTaskId(ocrTaskId);
         ocrResult.setX(x);
         ocrResult.setY(y);
         ocrResult.setWidth(width);
         ocrResult.setHeight(height);
+        ocrResult.setOriginalText(originalText);
         ocrResultMapper.insertOneOCRResult(ocrResult);
 
         return ocrResult.getId();

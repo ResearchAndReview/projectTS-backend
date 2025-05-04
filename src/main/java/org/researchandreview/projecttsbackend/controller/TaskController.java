@@ -144,8 +144,9 @@ public class TaskController {
 
         List<Integer> createdOCRResultId = new ArrayList<>();
         for (Caption caption : request.getCaptions()) {
-            int ocrResultId = ocrTaskService.createOCRResult(ocrTaskId, caption.getX(), caption.getY(), caption.getWidth(), caption.getHeight());
+            int ocrResultId = ocrTaskService.createOCRResult(ocrTaskId, caption.getX(), caption.getY(), caption.getWidth(), caption.getHeight(), caption.getText());
             transTaskService.createTransTask(ocrResultId, caption.getText(), task.getTranslateFrom(), task.getTranslateTo());
+            createdOCRResultId.add(ocrResultId);
         }
 
         ocrTask.setStatus("SUCCESS");
