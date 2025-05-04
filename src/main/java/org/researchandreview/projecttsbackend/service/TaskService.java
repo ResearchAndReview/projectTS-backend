@@ -76,8 +76,6 @@ public class TaskService {
         int taskId = task.getId();
 
         HashMap<String, Object> result = new HashMap<>();
-
-        Image image = imageMapper.findImageByTaskId(taskId);
         List<ResultData> taskResults = ocrResultMapper.findOCRResultsWithTransResultByTaskId(taskId);
         boolean isCompleted = true;
         if (taskResults == null || taskResults.isEmpty()) {
@@ -97,7 +95,6 @@ public class TaskService {
             taskMapper.updateOneTask(task);
         }
         result.put("task", task);
-        result.put("image", image);
         result.put("taskResults", taskResults);
         return result;
     }
