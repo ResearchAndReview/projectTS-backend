@@ -4,10 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.javassist.NotFoundException;
 import org.researchandreview.projecttsbackend.RabbitConfig;
 import org.researchandreview.projecttsbackend.mapper.*;
-import org.researchandreview.projecttsbackend.model.Image;
-import org.researchandreview.projecttsbackend.model.OCRTask;
-import org.researchandreview.projecttsbackend.model.ResultData;
-import org.researchandreview.projecttsbackend.model.Task;
+import org.researchandreview.projecttsbackend.model.*;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +25,18 @@ public class OCRTaskService {
     private final TaskMapper taskMapper;
     private final OCRTaskMapper ocrTaskMapper;
     private final RabbitTemplate rabbitTemplate;
+    private final OCRResultMapper ocrResultMapper;
 
     @Autowired
-    public OCRTaskService(TaskMapper taskMapper, OCRTaskMapper ocrTaskMapper, RabbitTemplate rabbitTemplate) {
+    public OCRTaskService(TaskMapper taskMapper, OCRTaskMapper ocrTaskMapper, RabbitTemplate rabbitTemplate, OCRResultMapper ocrResultMapper) {
         this.taskMapper = taskMapper;
         this.ocrTaskMapper = ocrTaskMapper;
         this.rabbitTemplate = rabbitTemplate;
+        this.ocrResultMapper = ocrResultMapper;
+    }
+
+    public OCRTask getOCRTaskById(String taskId) {
+        //ocrTaskMapper.
     }
 
     public int createOCRTask(int taskId) {
@@ -41,6 +44,19 @@ public class OCRTaskService {
         ocrTask.setTaskId(taskId);
         ocrTaskMapper.insertOneOCRTask(ocrTask);
 
-        return ocrTask.getTaskId();
+        return ocrTask.getId();
     }
+
+    public int createOCRResult(int ocrTaskId, int x, int y, int width, int height){
+        OCRResult ocrResult = new OCRResult();
+        ocrResult.setOcrTaskId(ocrTaskId);
+        ocrResult.setX(x);
+        ocrResult.setY(y);
+        ocrResult.setWidth(width);
+        ocrResult.setHeight(height);
+        ocrResultMapper.insertOneOCRResult(ocrResult);
+
+        return ocrResult.getId();
+    }
+
 }

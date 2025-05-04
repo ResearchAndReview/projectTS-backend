@@ -20,6 +20,33 @@
         order by TransTaskResult.id
     </select>
 
+    <insert id="insertOneTransTask"
+            parameterType="org.researchandreview.projecttsbackend.model.TransTaskResult"
+            useGeneratedKeys="true"
+            keyProperty="id"
+    >
+        INSERT INTO projectts.TransTaskResult (ocrResultId, status, failCause, originalText, translatedText, createdAt,
+                                               updatedAt, isRecovery, errorReportId, translateFrom, translateTo)
+        VALUES (#{ocrResultId}, DEFAULT, null, #{originalText}, null, DEFAULT, DEFAULT, DEFAULT, null, #{translateFrom},
+                #{translateTo});
+    </insert>
+
+    <update id="updateOneTransTask"
+            parameterType="org.researchandreview.projecttsbackend.model.TransTaskResult"
+    >
+        UPDATE projectts.TransTaskResult t
+        SET t.ocrResultId    = #{ocrResultId},
+            t.status         = #{status},
+            t.failCause      = #{failCause},
+            t.originalText   = #{originalText},
+            t.translatedText = #{translatedText},
+            t.isRecovery     = #{isRecovery},
+            t.errorReportId  = #{errorReportId},
+            t.translateFrom  = #{translateFrom},
+            t.translateTo    = #{translateTo}
+        WHERE t.id = #{id};
+    </update>
+
     <!--<update id="update" parameterType="com.example.myapp.model.User">
         UPDATE users SET name=#{name}, email=#{email} WHERE id=#{id}
     </update>-->

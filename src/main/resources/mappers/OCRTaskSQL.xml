@@ -16,6 +16,14 @@
         VALUES (#{taskId}, null, DEFAULT, DEFAULT, DEFAULT);
     </insert>
 
+    <update id="updateOneOCRTask"
+            parameterType="org.researchandreview.projecttsbackend.model.OCRTask"
+    >
+        UPDATE projectts.OCRTask t
+        SET t.failCause=#{failCause}, t.status = #{status}
+        WHERE t.id = #{id};
+    </update>
+
     <!--<update id="update" parameterType="com.example.myapp.model.User">
         UPDATE users SET name=#{name}, email=#{email} WHERE id=#{id}
     </update>-->

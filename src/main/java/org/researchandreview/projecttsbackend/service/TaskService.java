@@ -99,11 +99,11 @@ public class TaskService {
         }
     }
 
-    public void createTaskMessage(MultipartFile file, int taskId) {
+    public void createTaskMessage(MultipartFile file, int taskId, int ocrTaskId) {
         try{
             byte[] fileBytes = file.getBytes();
             String base64Encoded = Base64.getEncoder().encodeToString(fileBytes);
-            TaskMessage taskMessage = new TaskMessage(taskId, base64Encoded);
+            TaskMessage taskMessage = new TaskMessage(taskId, ocrTaskId, base64Encoded);
             String jsonMessage = objectMapper.writeValueAsString(taskMessage);
 
             rabbitTemplate.convertAndSend(RabbitConfig.QUEUE_NAME, jsonMessage);

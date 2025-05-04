@@ -11,4 +11,5 @@ public interface TransResultMapper {
     TransTaskResult findTransResultById(long id);
     List<TransTaskResult> findTransResultsByTaskId(long taskId);
     List<TransTaskResult> findTransResultsByOCRResultId(long ocrResultId);
+    int insertOneTransTask(TransTaskResult transTaskResult);
 }

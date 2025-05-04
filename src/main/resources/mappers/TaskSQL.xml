@@ -35,6 +35,17 @@
         VALUES (null, #{ownerNodeId},DEFAULT,  DEFAULT, DEFAULT, null, #{translateFrom}, #{translateTo});
     </insert>
 
+    <update id="updateOneTask" parameterType="org.researchandreview.projecttsbackend.model.Task">
+        UPDATE projectts.Task t
+        SET t.workingNodeId = #{workingNodeId},
+            t.ownerNodeId   = #{ownerNodeId},
+            t.status        = #{status},
+            t.failCause     = #{failCause},
+            t.translateFrom = #{translateFrom},
+            t.translateTo   = #{translateTo}
+        WHERE t.id = #{id};
+    </update>
+
    <!-- <resultMap id="userResultMap" type="com.example.myapp.model.User">
         <id property="id" column="id"/>
         <result property="name" column="name"/>

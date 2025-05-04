@@ -13,6 +13,7 @@ import org.researchandreview.projecttsbackend.model.OCRTask;
 import org.researchandreview.projecttsbackend.model.Task;
 import org.researchandreview.projecttsbackend.service.OCRTaskService;
 import org.researchandreview.projecttsbackend.service.TaskService;
+import org.researchandreview.projecttsbackend.service.TransTaskService;
 import org.researchandreview.projecttsbackend.util.FileIOManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Slf4j
@@ -29,11 +33,13 @@ public class TaskController {
 
     private final TaskService taskService;
     private final OCRTaskService ocrTaskService;
+    private final TransTaskService transTaskService;
 
     @Autowired
-    public TaskController(TaskService taskService, OCRTaskService ocrTaskService) {
+    public TaskController(TaskService taskService, OCRTaskService ocrTaskService, TransTaskService transTaskService) {
         this.taskService = taskService;
         this.ocrTaskService = ocrTaskService;
+        this.transTaskService = transTaskService;
     }
 /*
     @GetMapping("/all")
@@ -74,8 +80,10 @@ public class TaskController {
                 0,
                 0,
                 request.getTranslateFrom(),
-                request.getTranslateTo()); // DB Update
-        taskService.createTaskMessage(file, createdTaskId); // send to AI Task Distributor
+                request.getTranslateTo());
+        int createdOCRTaskId = ocrTaskService.createOCRTask(createdTaskId);
+
+        taskService.createTaskMessage(file, createdTaskId, createdOCRTaskId); // send to AI Task Distributor
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new TaskCreateSuccessResponse("Task successfully created", createdTaskId));
     }
@@ -120,20 +128,23 @@ public class TaskController {
 
     @PostMapping("/notify/ocr-success")
     public ResponseEntity<?> postNotifyOCRSuccess(
-            @RequestParam int taskId,
+            @RequestParam int ocrTaskId,
             @RequestBody TaskNotifyOCRSuccessRequest request
     ) throws Exception {
-        Task task = taskService.getTaskByIdAdmin(taskId);
+        OCRTask ocrTask = ocrTaskService.
         if (task == null) {
             throw new NotFoundException(taskId + " 작업을 찾을 수 없음");
         }
         // log.info(task.toString());
-        int ocrTaskId = ocrTaskService.createOCRTask(taskId);
-        for(Caption caption : request.getCaptions()) {
 
+
+        List<Integer> createdOCRResultId = new ArrayList<>();
+        for(Caption caption : request.getCaptions()) {
+            int ocrResultId = ocrTaskService.createOCRResult(ocrTaskId, caption.getX(), caption.getY(), caption.getWidth(), caption.getHeight());
+            transTaskService.createTransTask(ocrResultId, caption.getText(), task.getTranslateFrom(), task.getTranslateTo());
         }
 
-        return new ResponseEntity<GeneralResponse>(new GeneralResponse("OCR Succes Reported"), HttpStatus.OK);
+        return new ResponseEntity<TaskNotifyOCRSuccessResponse>(new TaskNotifyOCRSuccessResponse(createdOCRResultId), HttpStatus.OK);
     }
 
 //    @PostMapping("/update")

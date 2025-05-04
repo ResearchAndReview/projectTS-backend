@@ -30,6 +30,14 @@
         order by OCRResult.id
     </select>
 
+    <insert id="insertOneOCRResult"
+            parameterType="org.researchandreview.projecttsbackend.model.OCRResult"
+            useGeneratedKeys="true"
+            keyProperty="id"
+    >
+        INSERT INTO OCRResult (ocrTaskId, x, y, width, height, originalText)
+        VALUES (#{ocrTaskId}, #{x}, #{y}, #{width}, #{height}, #{originalText});
+    </insert>
     <!--<update id="update" parameterType="com.example.myapp.model.User">
         UPDATE users SET name=#{name}, email=#{email} WHERE id=#{id}
     </update>-->
