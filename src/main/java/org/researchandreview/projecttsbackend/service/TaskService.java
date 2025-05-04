@@ -80,6 +80,9 @@ public class TaskService {
         Image image = imageMapper.findImageByTaskId(taskId);
         List<ResultData> taskResults = ocrResultMapper.findOCRResultsWithTransResultByTaskId(taskId);
         boolean isCompleted = true;
+        if (taskResults == null || taskResults.isEmpty()) {
+            isCompleted = false;
+        }
         for (ResultData resultData : taskResults) {
             if (resultData.getTranslatedText() == null) {
                 isCompleted = false;
@@ -87,10 +90,10 @@ public class TaskService {
             }
         }
         if (isCompleted) {
-            task.setStatus("SUCCESS");
+            task.setStatus("success");
             taskMapper.updateOneTask(task);
         } else {
-            task.setStatus("PROCESSING");
+            task.setStatus("pending");
             taskMapper.updateOneTask(task);
         }
         result.put("task", task);
