@@ -16,4 +16,6 @@ public class TransTaskResult {
     private String failCause;
     private String translateFrom;
     private String translateTo;
+    private Integer isRecovery;
+    private Integer errorReportId;
 }

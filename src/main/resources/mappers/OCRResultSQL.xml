@@ -36,10 +36,10 @@
                translateFrom,
                translateTo
         FROM OCRResult
-                 LEFT JOIN OCRTask
-                           ON OCRResult.ocrTaskId = OCRTask.id AND OCRTask.taskId = #{taskId}
-                 LEFT JOIN TransTaskResult
-                           ON OCRResult.id = TransTaskResult.ocrResultId
+                 JOIN OCRTask
+                      ON OCRResult.ocrTaskId = OCRTask.id AND OCRTask.taskId = #{taskId}
+                 JOIN TransTaskResult
+                      ON OCRResult.id = TransTaskResult.ocrResultId
         order by OCRResult.id
     </select>
 
