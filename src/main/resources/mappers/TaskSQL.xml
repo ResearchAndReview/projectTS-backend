@@ -4,25 +4,39 @@
 
 <mapper namespace="org.researchandreview.projecttsbackend.mapper.TaskMapper">
     <select id="findAllTasks" resultType="Task">
-        SELECT * FROM Task;
+        SELECT *
+        FROM Task;
     </select>
     <select id="findOneTaskById" resultType="Task" parameterType="map">
-        SELECT * FROM Task where id=#{id} AND ownerNodeId=#{uuid};
+        SELECT *
+        FROM Task
+        where id = #{id}
+          AND ownerNodeId = #{uuid};
     </select>
-    <select id="findOneTaskByIdAdmin" resultType="Task" parameterType="long">
-        SELECT * FROM Task where id=#{id};
+    <select id="findOneTaskByIdAdmin" resultType="Task" parameterType="int">
+        SELECT *
+        FROM Task
+        where id = #{id};
     </select>
     <select id="findTasksByNodeId" resultType="Task" parameterType="string">
-        SELECT * FROM Task where workingNodeId=#{workingNodeId};
+        SELECT *
+        FROM Task
+        where workingNodeId = #{workingNodeId};
     </select>
     <select id="findTasksByStatusSuccess" resultType="Task">
-        SELECT * FROM Task where status="SUCCESS";
+        SELECT *
+        FROM Task
+        where status = "SUCCESS";
     </select>
     <select id="findTasksByStatusProgress" resultType="Task">
-        SELECT * FROM Task where status="PROGRESS";
+        SELECT *
+        FROM Task
+        where status = "PROGRESS";
     </select>
     <select id="findTasksByStatusFailed" resultType="Task">
-        SELECT * FROM Task where status="FAILED";
+        SELECT *
+        FROM Task
+        where status = "FAILED";
     </select>
 
 
@@ -31,8 +45,9 @@
             useGeneratedKeys="true"
             keyProperty="id"
     >
-        INSERT INTO Task (workingNodeId, ownerNodeId, status, createdAt, updatedAt, failCause, translateFrom, translateTo)
-        VALUES (null, #{ownerNodeId},DEFAULT,  DEFAULT, DEFAULT, null, #{translateFrom}, #{translateTo});
+        INSERT INTO Task (workingNodeId, ownerNodeId, status, createdAt, updatedAt, failCause, translateFrom,
+                          translateTo)
+        VALUES (null, #{ownerNodeId}, DEFAULT, DEFAULT, DEFAULT, null, #{translateFrom}, #{translateTo});
     </insert>
 
     <update id="updateOneTask" parameterType="org.researchandreview.projecttsbackend.model.Task">
@@ -46,11 +61,11 @@
         WHERE t.id = #{id};
     </update>
 
-   <!-- <resultMap id="userResultMap" type="com.example.myapp.model.User">
-        <id property="id" column="id"/>
-        <result property="name" column="name"/>
-        <result property="email" column="email"/>
-    </resultMap>-->
+    <!-- <resultMap id="userResultMap" type="com.example.myapp.model.User">
+         <id property="id" column="id"/>
+         <result property="name" column="name"/>
+         <result property="email" column="email"/>
+     </resultMap>-->
 
     <!--<select id="findById" parameterType="long" resultMap="userResultMap">
         SELECT * FROM users WHERE id = #{id}
