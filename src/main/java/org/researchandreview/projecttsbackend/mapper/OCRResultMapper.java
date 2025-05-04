@@ -14,7 +14,7 @@ public interface OCRResultMapper {
 
     OCRResult findOCRResultById(int id);
 
-    List<ResultData> findOCRResultsWithTransResultByTaskId(long taskId);
+    List<ResultData> findOCRResultsWithTransResultByTaskId(int taskId);
 
     void insertOneOCRResult(OCRResult ocrResult);
 }

@@ -7,11 +7,11 @@ import java.util.List;
 
 @Mapper
 public interface TransResultMapper {
-    TransTaskResult findTransResultById(long id);
+    TransTaskResult findTransResultById(int id);
 
-    List<TransTaskResult> findTransResultsByTaskId(long taskId);
+    List<TransTaskResult> findTransResultsByTaskId(int taskId);
 
-    List<TransTaskResult> findTransResultsByOCRResultId(long ocrResultId);
+    List<TransTaskResult> findTransResultsByOCRResultId(int ocrResultId);
 
     void insertOneTransTask(TransTaskResult transTaskResult);
 

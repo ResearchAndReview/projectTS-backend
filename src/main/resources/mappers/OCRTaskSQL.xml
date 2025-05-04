@@ -6,7 +6,7 @@
     <!--    <select id="findOCRResultById" resultType="OCRResult" parameterType="long">-->
     <!--        SELECT * FROM OCRResult where id=#{id} order by id;-->
     <!--    </select>-->
-    <select id="findOneOCRTaskById" resultType="Task" parameterType="long">
+    <select id="findOneOCRTaskById" resultType="Task" parameterType="int">
         SELECT *
         FROM Task
         where id = #{id};

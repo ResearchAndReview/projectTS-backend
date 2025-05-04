@@ -3,20 +3,27 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="org.researchandreview.projecttsbackend.mapper.TransResultMapper">
-    <select id="findTransResultById" resultType="TransTaskResult" parameterType="long">
-        SELECT * FROM TransTaskResult where id=#{id} order by id;
+    <select id="findTransResultById" resultType="TransTaskResult" parameterType="int">
+        SELECT *
+        FROM TransTaskResult
+        where id = #{id}
+        order by id;
     </select>
 
-    <select id="findTransResultsByOCRTaskId" resultType="TransTaskResult" parameterType="long">
-        SELECT * FROM TransTaskResult where ocrResultId=#{ocrResultId} order by id;
+    <select id="findTransResultsByOCRTaskId" resultType="TransTaskResult" parameterType="int">
+        SELECT *
+        FROM TransTaskResult
+        where ocrResultId = #{ocrResultId}
+        order by id;
     </select>
-    <select id="findTransResultsByTaskId" resultType="TransTaskResult" parameterType="long">
-        SELECT * FROM TransTaskResult
-        JOIN OCRResult
-        ON OCRResult.ocrTaskId = TransTaskResult.id
-        JOIN OCRTask
-        ON OCRResult.ocrTaskId = OCRTask.id
-        AND OCRTask.taskId = #{taskId}
+    <select id="findTransResultsByTaskId" resultType="TransTaskResult" parameterType="int">
+        SELECT *
+        FROM TransTaskResult
+                 JOIN OCRResult
+                      ON OCRResult.ocrTaskId = TransTaskResult.id
+                 JOIN OCRTask
+                      ON OCRResult.ocrTaskId = OCRTask.id
+                          AND OCRTask.taskId = #{taskId}
         order by TransTaskResult.id
     </select>
 
