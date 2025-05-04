@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.researchandreview.projecttsbackend.mapper.NodeMapper">
+    <select id="findAllTasks" resultType="Node">
+        SELECT *
+        FROM Task;
+    </select>
+    <select id="findOneNodeByIdAdmin" resultType="Node" parameterType="string">
+        SELECT *
+        FROM Node
+        where id = #{id};
+    </select>
+
+
+    <insert id="insertOneNode"
+            parameterType="org.researchandreview.projecttsbackend.model.Node"
+    >
+        INSERT INTO projectts.Node (id, ip, ocrCount, transCount, status, lastAlive, createdAt, contribution)
+        VALUES (#{id}, #{ip}, DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT);
+    </insert>
+
+    <update id="updateOneNode" parameterType="org.researchandreview.projecttsbackend.model.Node">
+        UPDATE projectts.Node t
+        SET t.ip           = #{ip},
+            t.ocrCount     = #{ocrCount},
+            t.transCount   = #{transCount},
+            t.status       = #{status},
+            t.lastAlive    = #{lastAlive},
+            t.contribution = #{contribution}
+        WHERE t.id LIKE #{id} ESCAPE '#';
+    </update>
+
+    <!-- <resultMap id="userResultMap" type="com.example.myapp.model.User">
+         <id property="id" column="id"/>
+         <result property="name" column="name"/>
+         <result property="email" column="email"/>
+     </resultMap>-->
+
+    <!--<select id="findById" parameterType="long" resultMap="userResultMap">
+        SELECT * FROM users WHERE id = #{id}
+    </select>
+
+    <select id="findAll" resultMap="userResultMap">
+        SELECT * FROM users
+    </select>
+
+    <insert id="insert" parameterType="com.example.myapp.model.User" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO users (name, email) VALUES (#{name}, #{email})
+    </insert>
+
+    <update id="update" parameterType="com.example.myapp.model.User">
+        UPDATE users SET name=#{name}, email=#{email} WHERE id=#{id}
+    </update>
+
+    <delete id="delete" parameterType="long">
+        DELETE FROM users WHERE id=#{id}
+    </delete>-->
+</mapper>
