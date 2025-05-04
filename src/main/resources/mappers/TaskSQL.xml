@@ -52,9 +52,7 @@
 
     <update id="updateOneTask" parameterType="org.researchandreview.projecttsbackend.model.Task">
         UPDATE projectts.Task t
-        SET t.workingNodeId = #{workingNodeId},
-            t.ownerNodeId   = #{ownerNodeId},
-            t.status        = #{status},
+        SET t.status        = #{status},
             t.failCause     = #{failCause},
             t.translateFrom = #{translateFrom},
             t.translateTo   = #{translateTo}
