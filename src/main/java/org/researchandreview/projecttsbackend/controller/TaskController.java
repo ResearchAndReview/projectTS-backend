@@ -182,6 +182,10 @@ public class TaskController {
         if (ocrTask == null) {
             throw new NotFoundException(ocrTaskId + " OCR 작업을 찾을 수 없음");
         }
+        Task task = taskService.getTaskByIdAdmin(ocrTask.getTaskId());
+        task.setStatus("failed");
+        task.setFailCause(request.getError());
+        taskService.updateTask(task);
         ocrTask.setStatus("failed");
         ocrTask.setFailCause(request.getError());
         ocrTaskService.updateOCRTask(ocrTask);
@@ -190,6 +194,7 @@ public class TaskController {
 
     @PostMapping("/notify/trans-failed")
     public ResponseEntity<GeneralResponse> postNotifyTransFailed(
+            @RequestParam int taskId,
             @RequestParam int transTaskId,
             @RequestBody TaskNotifyFailedRequest request
     ) throws NotFoundException {
@@ -197,6 +202,11 @@ public class TaskController {
         if (transTask == null) {
             throw new NotFoundException(transTaskId + " 번역 작업을 찾을 수 없음");
         }
+
+        Task task = taskService.getTaskByIdAdmin(taskId);
+        task.setStatus("failed");
+        task.setFailCause(request.getError());
+        taskService.updateTask(task);
 
         transTask.setStatus("failed");
         transTask.setFailCause(request.getError());

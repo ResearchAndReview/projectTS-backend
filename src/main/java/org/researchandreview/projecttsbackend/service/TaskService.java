@@ -95,6 +95,10 @@ public class TaskService {
         return taskResults;
     }
 
+    public void updateTask(Task task) {
+        taskMapper.updateOneTask(task);
+    }
+
     public Task getTaskById(int id, String uuid) throws NotFoundException {
         try {
             return taskMapper.findOneTaskById(id, uuid);
