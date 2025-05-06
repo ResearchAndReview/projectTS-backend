@@ -22,7 +22,7 @@ public class NodeService {
         Node newNode = new Node();
         String newUUID = UUIDGenerator.generateUUID();
         newNode.setId(newUUID);
-        newNode.setId(ip);
+        newNode.setIp(ip);
         nodeMapper.insertOneNode(newNode);
         return newUUID;
     }
