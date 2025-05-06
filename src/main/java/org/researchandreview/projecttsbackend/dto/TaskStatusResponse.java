@@ -20,7 +20,7 @@ public class TaskStatusResponse extends GeneralResponse {
     private long calculateElapsedTime(String status, Timestamp createdAt, Timestamp updatedAt) {
         Date now = new Date();
         return (switch (status) {
-            case "SUCCESS", "FAILED" -> updatedAt.getTime() - createdAt.getTime();
+            case "success", "failed" -> updatedAt.getTime() - createdAt.getTime();
             default -> now.getTime() - createdAt.getTime();
         }) / 1000;
     }
