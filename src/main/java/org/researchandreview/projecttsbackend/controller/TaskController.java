@@ -173,6 +173,37 @@ public class TaskController {
         return new ResponseEntity<>(new GeneralResponse("Trans Success Reported"), HttpStatus.OK);
     }
 
+    @PostMapping("/notify/ocr-failed")
+    public ResponseEntity<GeneralResponse> postNotifyOCRFailed(
+            @RequestParam int ocrTaskId,
+            @RequestBody TaskNotifyFailedRequest request
+    ) throws NotFoundException {
+        OCRTask ocrTask = ocrTaskService.getOCRTaskById(ocrTaskId);
+        if (ocrTask == null) {
+            throw new NotFoundException(ocrTaskId + " OCR 작업을 찾을 수 없음");
+        }
+        ocrTask.setStatus("failed");
+        ocrTask.setFailCause(request.getError());
+        ocrTaskService.updateOCRTask(ocrTask);
+        return new ResponseEntity<>(new GeneralResponse("OCR Failed Reported"), HttpStatus.OK);
+    }
+
+    @PostMapping("/notify/trans-failed")
+    public ResponseEntity<GeneralResponse> postNotifyTransFailed(
+            @RequestParam int transTaskId,
+            @RequestBody TaskNotifyFailedRequest request
+    ) throws NotFoundException {
+        TransTaskResult transTask = transTaskService.getTransTaskById(transTaskId);
+        if (transTask == null) {
+            throw new NotFoundException(transTaskId + " 번역 작업을 찾을 수 없음");
+        }
+
+        transTask.setStatus("failed");
+        transTask.setFailCause(request.getError());
+        transTaskService.updateTransTask(transTask);
+        return new ResponseEntity<>(new GeneralResponse("Trans Failed Reported"), HttpStatus.OK);
+    }
+
 //    @PostMapping("/update")
 //    public ResponseEntity<GeneralResponse> postTaskUpdate(@RequestParam int taskId, @RequestBody GeneralRequest request) {
 //        return new ResponseEntity<>(new GeneralResponse("OK"), HttpStatus.OK);
