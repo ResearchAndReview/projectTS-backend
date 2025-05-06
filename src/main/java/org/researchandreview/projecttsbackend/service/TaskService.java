@@ -74,6 +74,9 @@ public class TaskService {
         int taskId = task.getId();
 
         List<ResultData> taskResults = ocrResultMapper.findOCRResultsWithTransResultByTaskId(taskId);
+        if (task.getStatus().equals("success")) {
+            return taskResults;
+        }
         boolean isCompleted = true;
         if (taskResults == null || taskResults.isEmpty()) {
             isCompleted = false;
