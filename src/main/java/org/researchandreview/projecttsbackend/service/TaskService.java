@@ -20,9 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.util.Base64;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @Service
@@ -72,10 +70,9 @@ public class TaskService {
         return task.getId();
     }
 
-    public Map<String, Object> handleSuccessTask(Task task) throws Exception {
+    public List<ResultData> handleSuccessTask(Task task) {
         int taskId = task.getId();
 
-        HashMap<String, Object> result = new HashMap<>();
         List<ResultData> taskResults = ocrResultMapper.findOCRResultsWithTransResultByTaskId(taskId);
         boolean isCompleted = true;
         if (taskResults == null || taskResults.isEmpty()) {
@@ -94,9 +91,8 @@ public class TaskService {
             task.setStatus("pending");
             taskMapper.updateOneTask(task);
         }
-        result.put("task", task);
-        result.put("taskResults", taskResults);
-        return result;
+
+        return taskResults;
     }
 
     public Task getTaskById(int id, String uuid) throws NotFoundException {

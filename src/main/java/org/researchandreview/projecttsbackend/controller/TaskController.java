@@ -149,7 +149,7 @@ public class TaskController {
             createdOCRResultId.add(ocrResultId);
         }
 
-        ocrTask.setStatus("SUCCESS");
+        ocrTask.setStatus("success");
         ocrTaskService.updateOCRTask(ocrTask);
 
         return new ResponseEntity<>(new TaskNotifyOCRSuccessResponse(createdOCRResultId), HttpStatus.OK);
@@ -167,7 +167,7 @@ public class TaskController {
         // log.info(task.toString());
 
         transTask.setTranslatedText(request.getTranslatedText());
-        transTask.setStatus("SUCCESS");
+        transTask.setStatus("success");
         transTaskService.updateTransTask(transTask);
 
         return new ResponseEntity<>(new GeneralResponse("Trans Success Reported"), HttpStatus.OK);
