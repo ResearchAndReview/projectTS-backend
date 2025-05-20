@@ -217,4 +217,28 @@ public class TaskController {
 
         return new ResponseEntity<>(new GeneralResponse("Recovery sent"), HttpStatus.OK);
     }
+
+    @PostMapping("/recovery-list")
+    public ResponseEntity<GeneralResponse> postTaskRecoveryList(@RequestBody TaskRecoveryRequest[] requests) throws NotFoundException {
+        for (TaskRecoveryRequest request : requests) {
+            int ocrResultId = request.getOcrResultId();
+            OCRResult ocrResult = ocrTaskService.getOCRResultById(ocrResultId);
+            if (ocrResult == null) {
+                throw new NotFoundException(ocrResultId + " OCR 결과를 찾을 수 없음");
+            }
+            int transResultId = request.getTransResultId();
+            TransTaskResult transTaskResult = transTaskService.getTransTaskById(transResultId);
+            if (transTaskResult == null) {
+                throw new NotFoundException(transResultId + " 번역 결과를 찾을 수 없음");
+            }
+
+            transTaskResult.setIsRecovery(1);
+            transTaskService.updateTransTask(transTaskResult);
+
+            TransTaskResult transTask = transTaskService.createTransTask(ocrResultId, request.getOriginalText(), request.getTranslateFrom(), request.getTranslateTo());
+            transTaskService.createTransTaskMessage(transTask);
+        }
+
+        return new ResponseEntity<>(new GeneralResponse("Recovery sent"), HttpStatus.OK);
+    }
 }
