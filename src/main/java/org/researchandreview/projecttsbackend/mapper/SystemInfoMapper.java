@@ -9,9 +9,9 @@ import java.util.List;
 @Mapper
 public interface SystemInfoMapper {
 
-    List<SystemInfo> getAllSystemInfo();
-    SystemInfo getSystemInfoById(int id);
-    SystemInfo getSystemInfoByNodeId(String nodeId);
+    List<SystemInfo> findAllSystemInfos();
+    SystemInfo findOneSystemInfoByIdAdmin(int id);
+    SystemInfo findOneSystemInfoByNodeIdAdmin(String nodeId);
     void insertSystemInfo(SystemInfo systemInfo);
     void updateSystemInfo(SystemInfo systemInfo);
 }

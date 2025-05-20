@@ -48,7 +48,7 @@ public class NodeService {
     }
 
     public void updateOneSystemInfo(String nodeId, KeepaliveRequest request) {
-        SystemInfo systemInfo = systemInfoMapper.getSystemInfoByNodeId(nodeId);
+        SystemInfo systemInfo = systemInfoMapper.findOneSystemInfoByNodeIdAdmin(nodeId);
         systemInfo.setCpu(request.getCpu());
         systemInfo.setCpuUsage(request.getCpuUsage());
         systemInfo.setGpu(request.getGpu());
