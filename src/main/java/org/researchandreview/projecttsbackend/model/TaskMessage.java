@@ -5,13 +5,13 @@ import lombok.Data;
 
 @Data
 public class TaskMessage {
+    private Integer taskType;
     private Integer taskId;
     private Integer ocrTaskId;
+    private Integer transTaskId;
+    private Integer ocrResultId;
     private String imageData;
-
-    public TaskMessage(int taskId, int ocrTaskId, String base64Encoded) {
-        this.taskId = taskId;
-        this.ocrTaskId = ocrTaskId;
-        this.imageData = base64Encoded;
-    }
+    private String originalText;
+    private String translateFrom;
+    private String translateTo;
 }

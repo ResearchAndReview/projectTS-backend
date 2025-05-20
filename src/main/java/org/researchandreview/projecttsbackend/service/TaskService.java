@@ -8,10 +8,7 @@ import org.researchandreview.projecttsbackend.mapper.ImageMapper;
 import org.researchandreview.projecttsbackend.mapper.OCRResultMapper;
 import org.researchandreview.projecttsbackend.mapper.TaskMapper;
 import org.researchandreview.projecttsbackend.mapper.TransResultMapper;
-import org.researchandreview.projecttsbackend.model.Image;
-import org.researchandreview.projecttsbackend.model.ResultData;
-import org.researchandreview.projecttsbackend.model.Task;
-import org.researchandreview.projecttsbackend.model.TaskMessage;
+import org.researchandreview.projecttsbackend.model.*;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -74,9 +71,6 @@ public class TaskService {
         int taskId = task.getId();
 
         List<ResultData> taskResults = ocrResultMapper.findOCRResultsWithTransResultByTaskId(taskId);
-        if (task.getStatus().equals("success")) {
-            return taskResults;
-        }
         boolean isCompleted = true;
         if (taskResults == null || taskResults.isEmpty()) {
             isCompleted = false;
@@ -87,12 +81,14 @@ public class TaskService {
                 break;
             }
         }
-        if (isCompleted) {
-            task.setStatus("success");
-            taskMapper.updateOneTask(task);
-        } else {
-            task.setStatus("pending");
-            taskMapper.updateOneTask(task);
+        if(!task.getStatus().equals("failed")){
+            if (isCompleted) {
+                task.setStatus("success");
+                taskMapper.updateOneTask(task);
+            } else {
+                task.setStatus("pending");
+                taskMapper.updateOneTask(task);
+            }
         }
 
         return taskResults;
@@ -118,11 +114,16 @@ public class TaskService {
         }
     }
 
-    public void createTaskMessage(MultipartFile file, int taskId, int ocrTaskId) {
+    public void createOCRTaskMessage(MultipartFile file, int taskId, int ocrTaskId) {
         try {
             byte[] fileBytes = file.getBytes();
             String base64Encoded = Base64.getEncoder().encodeToString(fileBytes);
-            TaskMessage taskMessage = new TaskMessage(taskId, ocrTaskId, base64Encoded);
+            TaskMessage taskMessage = new TaskMessage();
+            taskMessage.setTaskType(0);
+            taskMessage.setTaskId(taskId);
+            taskMessage.setOcrTaskId(ocrTaskId);
+            taskMessage.setImageData(base64Encoded);
+
             String jsonMessage = objectMapper.writeValueAsString(taskMessage);
 
             rabbitTemplate.convertAndSend(RabbitConfig.QUEUE_NAME, jsonMessage);
@@ -130,4 +131,8 @@ public class TaskService {
             log.info(e.getMessage());
         }
     }
+
+
+
+
 }

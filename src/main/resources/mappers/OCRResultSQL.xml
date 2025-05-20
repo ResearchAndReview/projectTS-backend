@@ -39,7 +39,7 @@
                  JOIN OCRTask
                       ON OCRResult.ocrTaskId = OCRTask.id AND OCRTask.taskId = #{taskId}
                  JOIN TransTaskResult
-                      ON OCRResult.id = TransTaskResult.ocrResultId
+                      ON OCRResult.id = TransTaskResult.ocrResultId AND TransTaskResult.isRecovery != 1
         order by OCRResult.id
     </select>
 

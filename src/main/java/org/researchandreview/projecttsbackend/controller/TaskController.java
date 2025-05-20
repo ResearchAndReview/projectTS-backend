@@ -8,10 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.javassist.NotFoundException;
 import org.researchandreview.projecttsbackend.dto.*;
-import org.researchandreview.projecttsbackend.model.Caption;
-import org.researchandreview.projecttsbackend.model.OCRTask;
-import org.researchandreview.projecttsbackend.model.Task;
-import org.researchandreview.projecttsbackend.model.TransTaskResult;
+import org.researchandreview.projecttsbackend.model.*;
 import org.researchandreview.projecttsbackend.service.OCRTaskService;
 import org.researchandreview.projecttsbackend.service.TaskService;
 import org.researchandreview.projecttsbackend.service.TransTaskService;
@@ -42,21 +39,6 @@ public class TaskController {
         this.ocrTaskService = ocrTaskService;
         this.transTaskService = transTaskService;
     }
-/*
-    @GetMapping("/all")
-    public ResponseEntity<TaskResponse> taskAll() {
-        List<Task> taskList = taskService.getAllTasks();
-        log.info(taskList.toString());
-        TaskResponse taskResponse = new TaskResponse("Successfully created.", taskList.get(0));
-        return new ResponseEntity<>(taskResponse, HttpStatus.OK);
-    }
-
-    @PostMapping("/hello")
-    public ResponseEntity<GeneralReponse> createMessage(@RequestBody GeneralRequest request) {
-        //taskService.sendMessage(request.getTest());
-        return new ResponseEntity<>(new GeneralReponse("OK"), HttpStatus.OK);
-    }
-*/
 
 
     @Operation(summary = "작업 생성 : 이미지 업로드")
@@ -84,7 +66,7 @@ public class TaskController {
                 request.getTranslateTo());
         int createdOCRTaskId = ocrTaskService.createOCRTask(createdTaskId);
 
-        taskService.createTaskMessage(file, createdTaskId, createdOCRTaskId); // send to AI Task Distributor
+        taskService.createOCRTaskMessage(file, createdTaskId, createdOCRTaskId); // send to AI Task Distributor
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new TaskCreateSuccessResponse("Task successfully created", createdTaskId));
     }
@@ -214,13 +196,25 @@ public class TaskController {
         return new ResponseEntity<>(new GeneralResponse("Trans Failed Reported"), HttpStatus.OK);
     }
 
-//    @PostMapping("/update")
-//    public ResponseEntity<GeneralResponse> postTaskUpdate(@RequestParam int taskId, @RequestBody GeneralRequest request) {
-//        return new ResponseEntity<>(new GeneralResponse("OK"), HttpStatus.OK);
-//    }
-//
-//    @PostMapping("/recovery")
-//    public ResponseEntity<GeneralResponse> postTaskRecovery(@RequestParam int taskId, @RequestBody GeneralRequest request) {
-//        return new ResponseEntity<>(new GeneralResponse("OK"), HttpStatus.OK);
-//    }
+    @PostMapping("/recovery")
+    public ResponseEntity<GeneralResponse> postTaskRecovery(@RequestBody TaskRecoveryRequest request) throws NotFoundException {
+        int ocrResultId = request.getOcrResultId();
+        OCRResult ocrResult = ocrTaskService.getOCRResultById(ocrResultId);
+        if(ocrResult == null){
+            throw new NotFoundException(ocrResultId + " OCR 결과를 찾을 수 없음");
+        }
+        int transResultId = request.getTransResultId();
+        TransTaskResult transTaskResult = transTaskService.getTransTaskById(transResultId);
+        if(transTaskResult == null){
+            throw new NotFoundException(transResultId + " 번역 결과를 찾을 수 없음");
+        }
+
+        transTaskResult.setIsRecovery(1);
+        transTaskService.updateTransTask(transTaskResult);
+
+        TransTaskResult transTask = transTaskService.createTransTask(ocrResultId, request.getOriginalText(), request.getTranslateFrom(), request.getTranslateTo());
+        transTaskService.createTransTaskMessage(transTask);
+
+        return new ResponseEntity<>(new GeneralResponse("Recovery sent"), HttpStatus.OK);
+    }
 }
