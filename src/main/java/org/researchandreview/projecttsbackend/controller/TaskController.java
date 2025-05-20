@@ -66,7 +66,7 @@ public class TaskController {
                 request.getTranslateTo());
         int createdOCRTaskId = ocrTaskService.createOCRTask(createdTaskId);
 
-        taskService.createOCRTaskMessage(file, createdTaskId, createdOCRTaskId); // send to AI Task Distributor
+        taskService.createOCRTaskMessage(file, createdOCRTaskId); // send to AI Task Distributor
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new TaskCreateSuccessResponse("Task successfully created", createdTaskId));
     }
@@ -113,7 +113,7 @@ public class TaskController {
     }
 
     @PostMapping("/notify/ocr-success")
-    public ResponseEntity<TaskNotifyOCRSuccessResponse> postNotifyOCRSuccess(
+    public ResponseEntity<GeneralResponse> postNotifyOCRSuccess(
             @RequestParam int ocrTaskId,
             @RequestBody TaskNotifyOCRSuccessRequest request
     ) throws Exception {
@@ -124,17 +124,16 @@ public class TaskController {
         // log.info(task.toString());
         Task task = taskService.getTaskByIdAdmin(ocrTask.getTaskId());
 
-        List<Integer> createdOCRResultId = new ArrayList<>();
         for (Caption caption : request.getCaptions()) {
             int ocrResultId = ocrTaskService.createOCRResult(ocrTaskId, caption.getX(), caption.getY(), caption.getWidth(), caption.getHeight(), caption.getText());
-            transTaskService.createTransTask(ocrResultId, caption.getText(), task.getTranslateFrom(), task.getTranslateTo());
-            createdOCRResultId.add(ocrResultId);
+            TransTaskResult transTaskResult = transTaskService.createTransTask(ocrResultId, caption.getText(), task.getTranslateFrom(), task.getTranslateTo());
+            transTaskService.createTransTaskMessage(transTaskResult);
         }
 
         ocrTask.setStatus("success");
         ocrTaskService.updateOCRTask(ocrTask);
 
-        return new ResponseEntity<>(new TaskNotifyOCRSuccessResponse(createdOCRResultId), HttpStatus.OK);
+        return new ResponseEntity<>(new GeneralResponse("OK"), HttpStatus.OK);
     }
 
     @PostMapping("/notify/trans-success")
@@ -176,7 +175,6 @@ public class TaskController {
 
     @PostMapping("/notify/trans-failed")
     public ResponseEntity<GeneralResponse> postNotifyTransFailed(
-            @RequestParam int taskId,
             @RequestParam int transTaskId,
             @RequestBody TaskNotifyFailedRequest request
     ) throws NotFoundException {
@@ -184,8 +182,10 @@ public class TaskController {
         if (transTask == null) {
             throw new NotFoundException(transTaskId + " 번역 작업을 찾을 수 없음");
         }
+        OCRResult ocrResult = ocrTaskService.getOCRResultById(transTask.getOcrResultId());
+        OCRTask ocrTask = ocrTaskService.getOCRTaskById(ocrResult.getOcrTaskId());
+        Task task = taskService.getTaskByIdAdmin(ocrTask.getTaskId());
 
-        Task task = taskService.getTaskByIdAdmin(taskId);
         task.setStatus("failed");
         task.setFailCause(request.getError());
         taskService.updateTask(task);

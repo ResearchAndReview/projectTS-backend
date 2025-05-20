@@ -52,6 +52,7 @@ public class TransTaskService {
             TaskMessage taskMessage = new TaskMessage();
             taskMessage.setTaskType(1);
             taskMessage.setTransTaskId(transTaskResult.getId());
+
             taskMessage.setOcrResultId(transTaskResult.getOcrResultId());
             taskMessage.setOriginalText(transTaskResult.getOriginalText());
             taskMessage.setTranslateFrom(transTaskResult.getTranslateFrom());
