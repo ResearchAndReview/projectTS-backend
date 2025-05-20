@@ -1,8 +1,11 @@
 package org.researchandreview.projecttsbackend.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.researchandreview.projecttsbackend.dto.KeepaliveRequest;
 import org.researchandreview.projecttsbackend.mapper.NodeMapper;
+import org.researchandreview.projecttsbackend.mapper.SystemInfoMapper;
 import org.researchandreview.projecttsbackend.model.Node;
+import org.researchandreview.projecttsbackend.model.SystemInfo;
 import org.researchandreview.projecttsbackend.util.UUIDGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,10 +15,12 @@ import org.springframework.stereotype.Service;
 public class NodeService {
 
     private final NodeMapper nodeMapper;
+    private final SystemInfoMapper systemInfoMapper;
 
     @Autowired
-    public NodeService(NodeMapper nodeMapper) {
+    public NodeService(NodeMapper nodeMapper, SystemInfoMapper systemInfoMapper) {
         this.nodeMapper = nodeMapper;
+        this.systemInfoMapper = systemInfoMapper;
     }
 
     public String createOneNode(String ip) {
@@ -25,5 +30,36 @@ public class NodeService {
         newNode.setIp(ip);
         nodeMapper.insertOneNode(newNode);
         return newUUID;
+    }
+
+    public SystemInfo createOneSystemInfo(String nodeId) {
+        SystemInfo newSystemInfo = new SystemInfo();
+        newSystemInfo.setNodeId(nodeId);
+
+        systemInfoMapper.insertSystemInfo(newSystemInfo);
+
+        return newSystemInfo;
+    }
+
+    public void updateOneNode(String nodeId, String ip) {
+        Node node  = nodeMapper.findOneNodeByIdAdmin(nodeId);
+        node.setIp(ip);
+        nodeMapper.updateOneNode(node);
+    }
+
+    public void updateOneSystemInfo(String nodeId, KeepaliveRequest request) {
+        SystemInfo systemInfo = systemInfoMapper.getSystemInfoByNodeId(nodeId);
+        systemInfo.setCpu(request.getCpu());
+        systemInfo.setCpuUsage(request.getCpuUsage());
+        systemInfo.setGpu(request.getGpu());
+        systemInfo.setGpuUsage(request.getGpuUsage());
+        systemInfo.setRam(request.getRam());
+        systemInfo.setRamUsage(request.getRamUsage());
+        systemInfo.setVram(request.getVram());
+        systemInfo.setVramUsage(request.getVramUsage());
+
+        // TODO: insert weight calc algorithm here
+        // systemInfo.setWeight(weight);
+        systemInfoMapper.updateSystemInfo(systemInfo);
     }
 }
