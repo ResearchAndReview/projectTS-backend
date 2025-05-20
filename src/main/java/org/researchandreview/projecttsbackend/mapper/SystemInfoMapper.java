@@ -12,6 +12,6 @@ public interface SystemInfoMapper {
     List<SystemInfo> findAllSystemInfos();
     SystemInfo findOneSystemInfoByIdAdmin(int id);
     SystemInfo findOneSystemInfoByNodeIdAdmin(String nodeId);
-    void insertSystemInfo(SystemInfo systemInfo);
-    void updateSystemInfo(SystemInfo systemInfo);
+    void insertOneSystemInfo(SystemInfo systemInfo);
+    void updateOneSystemInfo(SystemInfo systemInfo);
 }

@@ -36,7 +36,7 @@ public class NodeService {
         SystemInfo newSystemInfo = new SystemInfo();
         newSystemInfo.setNodeId(nodeId);
 
-        systemInfoMapper.insertSystemInfo(newSystemInfo);
+        systemInfoMapper.insertOneSystemInfo(newSystemInfo);
 
         return newSystemInfo;
     }
@@ -60,6 +60,6 @@ public class NodeService {
 
         // TODO: insert weight calc algorithm here
         // systemInfo.setWeight(weight);
-        systemInfoMapper.updateSystemInfo(systemInfo);
+        systemInfoMapper.updateOneSystemInfo(systemInfo);
     }
 }
