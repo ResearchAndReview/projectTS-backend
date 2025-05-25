@@ -23,6 +23,10 @@ public class NodeService {
         this.systemInfoMapper = systemInfoMapper;
     }
 
+    public Node getOneNodeById(String nodeId) {
+        return nodeMapper.findOneNodeByIdAdmin(nodeId);
+    }
+
     public String createOneNode(String ip) {
         Node newNode = new Node();
         String newUUID = UUIDGenerator.generateUUID();
@@ -40,9 +44,13 @@ public class NodeService {
 
         return newSystemInfo;
     }
+    
+    public void updateOneNode(Node node) {
+        nodeMapper.updateOneNode(node);
+    }
 
     public void updateOneNode(String nodeId, String ip) {
-        Node node  = nodeMapper.findOneNodeByIdAdmin(nodeId);
+        Node node = nodeMapper.findOneNodeByIdAdmin(nodeId);
         node.setIp(ip);
         nodeMapper.updateOneNode(node);
     }

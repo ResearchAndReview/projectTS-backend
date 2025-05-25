@@ -2,12 +2,9 @@ package org.researchandreview.projecttsbackend.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.researchandreview.projecttsbackend.dto.GeneralRequest;
 import org.researchandreview.projecttsbackend.dto.GeneralResponse;
 import org.researchandreview.projecttsbackend.dto.KeepaliveRequest;
 import org.researchandreview.projecttsbackend.dto.NodeRegisterSuccessResponse;
-import org.researchandreview.projecttsbackend.model.Node;
-import org.researchandreview.projecttsbackend.model.SystemInfo;
 import org.researchandreview.projecttsbackend.service.NodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
