@@ -114,9 +114,15 @@ public class TaskController {
 
     @PostMapping("/notify/ocr-success")
     public ResponseEntity<GeneralResponse> postNotifyOCRSuccess(
+            @RequestHeader(name = "x-uuid") String uuid,
             @RequestParam int ocrTaskId,
             @RequestBody TaskNotifyOCRSuccessRequest request
     ) throws Exception {
+        Node node = nodeService.getOneNodeById(uuid);
+        if (node == null) {
+            throw new NotFoundException(uuid + " 노드를 찾을 수 없음");
+        }
+        node.setStatus("IDLE");
         OCRTask ocrTask = ocrTaskService.getOCRTaskById(ocrTaskId);
         if (ocrTask == null) {
             throw new NotFoundException(ocrTaskId + " OCR 작업을 찾을 수 없음");
@@ -129,7 +135,7 @@ public class TaskController {
             TransTaskResult transTaskResult = transTaskService.createTransTask(ocrResultId, caption.getText(), task.getTranslateFrom(), task.getTranslateTo());
             transTaskService.createTransTaskMessage(transTaskResult);
         }
-
+        nodeService.updateOneNode(node);
         ocrTask.setStatus("success");
         ocrTaskService.updateOCRTask(ocrTask);
 
@@ -138,15 +144,22 @@ public class TaskController {
 
     @PostMapping("/notify/trans-success")
     public ResponseEntity<GeneralResponse> postNotifyTransSuccess(
+            @RequestHeader(name = "x-uuid") String uuid,
             @RequestParam int transTaskId,
             @RequestBody TaskNotifyTransSuccessRequest request
     ) throws Exception {
+        Node node = nodeService.getOneNodeById(uuid);
+        if (node == null) {
+            throw new NotFoundException(uuid + " 노드를 찾을 수 없음");
+        }
+        node.setStatus("IDLE");
         TransTaskResult transTask = transTaskService.getTransTaskById(transTaskId);
         if (transTask == null) {
             throw new NotFoundException(transTaskId + " 번역 작업을 찾을 수 없음");
         }
         // log.info(task.toString());
 
+        nodeService.updateOneNode(node);
         transTask.setTranslatedText(request.getTranslatedText());
         transTask.setStatus("success");
         transTaskService.updateTransTask(transTask);
@@ -156,13 +169,20 @@ public class TaskController {
 
     @PostMapping("/notify/ocr-failed")
     public ResponseEntity<GeneralResponse> postNotifyOCRFailed(
+            @RequestHeader(name = "x-uuid") String uuid,
             @RequestParam int ocrTaskId,
             @RequestBody TaskNotifyFailedRequest request
     ) throws NotFoundException {
+        Node node = nodeService.getOneNodeById(uuid);
+        if (node == null) {
+            throw new NotFoundException(uuid + " 노드를 찾을 수 없음");
+        }
+        node.setStatus("IDLE");
         OCRTask ocrTask = ocrTaskService.getOCRTaskById(ocrTaskId);
         if (ocrTask == null) {
             throw new NotFoundException(ocrTaskId + " OCR 작업을 찾을 수 없음");
         }
+        nodeService.updateOneNode(node);
         Task task = taskService.getTaskByIdAdmin(ocrTask.getTaskId());
         task.setStatus("failed");
         task.setFailCause(request.getError());
@@ -175,9 +195,15 @@ public class TaskController {
 
     @PostMapping("/notify/trans-failed")
     public ResponseEntity<GeneralResponse> postNotifyTransFailed(
+            @RequestHeader(name = "x-uuid") String uuid,
             @RequestParam int transTaskId,
             @RequestBody TaskNotifyFailedRequest request
     ) throws NotFoundException {
+        Node node = nodeService.getOneNodeById(uuid);
+        if (node == null) {
+            throw new NotFoundException(uuid + " 노드를 찾을 수 없음");
+        }
+        node.setStatus("IDLE");
         TransTaskResult transTask = transTaskService.getTransTaskById(transTaskId);
         if (transTask == null) {
             throw new NotFoundException(transTaskId + " 번역 작업을 찾을 수 없음");
@@ -186,6 +212,7 @@ public class TaskController {
         OCRTask ocrTask = ocrTaskService.getOCRTaskById(ocrResult.getOcrTaskId());
         Task task = taskService.getTaskByIdAdmin(ocrTask.getTaskId());
 
+        nodeService.updateOneNode(node);
         task.setStatus("failed");
         task.setFailCause(request.getError());
         taskService.updateTask(task);
