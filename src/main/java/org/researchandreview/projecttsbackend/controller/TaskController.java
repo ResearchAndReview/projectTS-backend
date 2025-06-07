@@ -130,11 +130,15 @@ public class TaskController {
         // log.info(task.toString());
         Task task = taskService.getTaskByIdAdmin(ocrTask.getTaskId());
 
+
         for (Caption caption : request.getCaptions()) {
             int ocrResultId = ocrTaskService.createOCRResult(ocrTaskId, caption.getX(), caption.getY(), caption.getWidth(), caption.getHeight(), caption.getText());
             TransTaskResult transTaskResult = transTaskService.createTransTask(ocrResultId, caption.getText(), task.getTranslateFrom(), task.getTranslateTo());
             transTaskService.createTransTaskMessage(transTaskResult);
         }
+
+        // TODO: node (model을 확인하세요) 를 setter 메소드들로 수정하여 update 하세요!
+
         nodeService.updateOneNode(node);
         ocrTask.setStatus("success");
         ocrTaskService.updateOCRTask(ocrTask);
@@ -158,6 +162,9 @@ public class TaskController {
             throw new NotFoundException(transTaskId + " 번역 작업을 찾을 수 없음");
         }
         // log.info(task.toString());
+
+
+        // TODO: node (model을 확인하세요) 를 setter 메소드들로 수정하여 update 하세요!
 
         nodeService.updateOneNode(node);
         transTask.setTranslatedText(request.getTranslatedText());
