@@ -1,11 +1,9 @@
-package org.researchandreview.projecttsbackend.model;
+package org.researchandreview.projecttsbackend.dto;
 
 import lombok.Data;
 
 @Data
-public class SystemInfo {
-    private Integer id;
-    private String nodeId;
+public class KeepaliveRequest {
     private String cpu;
     private Integer cpuUsage;
     private String gpu;
