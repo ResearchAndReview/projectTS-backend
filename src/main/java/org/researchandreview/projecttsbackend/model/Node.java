@@ -14,4 +14,8 @@ public class Node {
     private Integer ocrCount;
     private Integer transCount;
     private Integer contribution;
+    private Double ocrPerf;
+    private Double ocrTaskSize;
+    private Double transTaskSize;
+    private Double transPerf;
 }

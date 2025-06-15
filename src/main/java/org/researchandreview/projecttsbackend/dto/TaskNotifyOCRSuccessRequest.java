@@ -8,4 +8,6 @@ import java.util.List;
 @Data
 public class TaskNotifyOCRSuccessRequest {
     private List<Caption> captions;
+    private Double elapsedTime;
+    private Double ocrTaskSize;
 }
