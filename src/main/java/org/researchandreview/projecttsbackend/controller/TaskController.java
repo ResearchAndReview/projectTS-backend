@@ -6,6 +6,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.ibatis.javassist.NotFoundException;
 import org.researchandreview.projecttsbackend.dto.*;
 import org.researchandreview.projecttsbackend.model.*;
@@ -136,15 +140,14 @@ public class TaskController {
         // log.info(task.toString());
         Task task = taskService.getTaskByIdAdmin(ocrTask.getTaskId());
 
-        // // decrease ocr task size
-        // String nodeid = task.getWorkingNodeId();
-        // nodeService.decreaseOcrTaskSize(nodeid, request.getOcrTaskSize());
+        // decrease ocr task size
+        node.setOcrTaskSize(node.getOcrTaskSize() - request.getOcrTaskSize());
 
-        // // recacurate ocr performance
-        // double oldOcrPerf = nodeService.getOcrPerf(nodeid);
-        // double calcuratedOcrPerf = request.getOcrTaskSize() / request.getElapsedTime();
-        // double newOcrPerf = performanceManager.calcurateNewPerformance(oldOcrPerf, calcuratedOcrPerf);
-        // nodeService.setOcrPerf(nodeid, newOcrPerf);
+        // recacurate ocr performance
+        double oldOcrPerf = node.getOcrPerf();
+        double calcuratedOcrPerf = request.getOcrTaskSize() / request.getElapsedTime();
+        double newOcrPerf = performanceManager.calcurateNewPerformance(oldOcrPerf, calcuratedOcrPerf);
+        node.setOcrPerf(newOcrPerf);
 
         // List<Integer> createdOCRResultId = new ArrayList<>();
       
@@ -153,8 +156,6 @@ public class TaskController {
             TransTaskResult transTaskResult = transTaskService.createTransTask(ocrResultId, caption.getText(), task.getTranslateFrom(), task.getTranslateTo());
             transTaskService.createTransTaskMessage(transTaskResult);
         }
-
-        // TODO: node (model을 확인하세요) 를 setter 메소드들로 수정하여 update 하세요!
 
         nodeService.updateOneNode(node);
         ocrTask.setStatus("success");
@@ -180,20 +181,14 @@ public class TaskController {
         }
         // log.info(task.toString());
 
-        // Task task = taskService.getTaskByIdAdmin(transTask.getTaskId());
+        // decrease trans task size
+        node.setTransTaskSize(node.getTransTaskSize() - request.getTransTaskSize());
 
-        // // decrease trans task size
-        // String nodeid = task.getWorkingNodeId();
-        // nodeService.decreaseTransTaskSize(nodeid, request.gettransTaskSize());
-
-        // // recacurate trans performance
-        // double oldTransPerf = nodeService.getTransPerf(nodeid);
-        // double calcuratedTransPerf = request.getTransTaskSize() / request.getElapsedTime();
-        // double newTransPerf = performanceManager.calcurateNewPerformance(oldTransPerf, calcuratedTransPerf);
-        // nodeService.setTransPerf(nodeid, newTransPerf);
-
-
-        // TODO: node (model을 확인하세요) 를 setter 메소드들로 수정하여 update 하세요!
+        // recacurate trans performance
+        double oldTransPerf = node.getTransPerf();
+        double calcuratedTransPerf = request.getTransTaskSize() / request.getElapsedTime();
+        double newTransPerf = performanceManager.calcurateNewPerformance(oldTransPerf, calcuratedTransPerf);
+        node.setTransPerf(newTransPerf);
 
         nodeService.updateOneNode(node);
       
