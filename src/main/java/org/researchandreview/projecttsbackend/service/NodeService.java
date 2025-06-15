@@ -35,7 +35,34 @@ public class NodeService {
         nodeMapper.insertOneNode(newNode);
         return newUUID;
     }
+    public void decreaseOcrTaskSize(String id, Double ocrTaskSize) {
+        Node node = nodeMapper.findOneNodeByIdAdmin(id);
+        node.setOcrTaskSize( node.getOcrTaskSize() - ocrTaskSize );
+    }
 
+    public void setOcrPerf(String id, Double ocrPerf) {
+        Node node = nodeMapper.findOneNodeByIdAdmin(id);
+        node.setOcrPerf(ocrPerf);
+    }
+
+    public Double getOcrPerf(String id) {
+        Node node = nodeMapper.findOneNodeByIdAdmin(id);
+        return node.getOcrPerf();
+    }
+
+    public void decreaseTransTaskSize(String id, Double transTaskSize) {
+        Node node = nodeMapper.findOneNodeByIdAdmin(id);
+        node.setTransTaskSize( node.getTransTaskSize() - transTaskSize );
+    }
+
+    public void setTransPerf(String id, Double transPerf) {
+        Node node = nodeMapper.findOneNodeByIdAdmin(id);
+        node.setTransPerf(transPerf);
+    }
+
+    public Double getTransPerf(String id) {
+        Node node = nodeMapper.findOneNodeByIdAdmin(id);
+        return node.getTransPerf();
     public SystemInfo createOneSystemInfo(String nodeId) {
         SystemInfo newSystemInfo = new SystemInfo();
         newSystemInfo.setNodeId(nodeId);

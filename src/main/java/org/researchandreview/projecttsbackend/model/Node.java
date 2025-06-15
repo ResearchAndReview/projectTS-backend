@@ -13,10 +13,9 @@ public class Node {
     private Timestamp createdAt;
     private Integer ocrCount;
     private Integer transCount;
-    private Integer contribution;
-    private Double ocr_perf;
-    private Double trans_perf;
-    private Double ocr_task_size;
-    private Double trans_task_size;
-
+    private Integer contribution
+    private Double ocrPerf;
+    private Double ocrTaskSize;
+    private Double transTaskSize;
+    private Double transPerf;
 }

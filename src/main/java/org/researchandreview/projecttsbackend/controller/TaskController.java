@@ -14,6 +14,7 @@ import org.researchandreview.projecttsbackend.service.OCRTaskService;
 import org.researchandreview.projecttsbackend.service.TaskService;
 import org.researchandreview.projecttsbackend.service.TransTaskService;
 import org.researchandreview.projecttsbackend.util.FileIOManager;
+import org.researchandreview.projecttsbackend.util.PerformanceManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -31,13 +32,16 @@ public class TaskController {
     private final TaskService taskService;
     private final OCRTaskService ocrTaskService;
     private final TransTaskService transTaskService;
+    private final NodeService nodeService;
+    private final PerformanceManager performanceManager;
 
     @Autowired
-    public TaskController(NodeService nodeService, TaskService taskService, OCRTaskService ocrTaskService, TransTaskService transTaskService) {
-        this.nodeService = nodeService;
+    public TaskController(TaskService taskService, OCRTaskService ocrTaskService, TransTaskService transTaskService, NodeService nodeService, PerformanceManager performanceManager) {
         this.taskService = taskService;
         this.ocrTaskService = ocrTaskService;
         this.transTaskService = transTaskService;
+        this.nodeService = nodeService;
+        this.performanceManager = performanceManager;
     }
 
 
@@ -130,7 +134,18 @@ public class TaskController {
         // log.info(task.toString());
         Task task = taskService.getTaskByIdAdmin(ocrTask.getTaskId());
 
+        // // decrease ocr task size
+        // String nodeid = task.getWorkingNodeId();
+        // nodeService.decreaseOcrTaskSize(nodeid, request.getOcrTaskSize());
 
+        // // recacurate ocr performance
+        // double oldOcrPerf = nodeService.getOcrPerf(nodeid);
+        // double calcuratedOcrPerf = request.getOcrTaskSize() / request.getElapsedTime();
+        // double newOcrPerf = performanceManager.calcurateNewPerformance(oldOcrPerf, calcuratedOcrPerf);
+        // nodeService.setOcrPerf(nodeid, newOcrPerf);
+
+        List<Integer> createdOCRResultId = new ArrayList<>();
+      
         for (Caption caption : request.getCaptions()) {
             int ocrResultId = ocrTaskService.createOCRResult(ocrTaskId, caption.getX(), caption.getY(), caption.getWidth(), caption.getHeight(), caption.getText());
             TransTaskResult transTaskResult = transTaskService.createTransTask(ocrResultId, caption.getText(), task.getTranslateFrom(), task.getTranslateTo());
@@ -163,10 +178,23 @@ public class TaskController {
         }
         // log.info(task.toString());
 
+        // Task task = taskService.getTaskByIdAdmin(transTask.getTaskId());
+
+        // // decrease trans task size
+        // String nodeid = task.getWorkingNodeId();
+        // nodeService.decreaseTransTaskSize(nodeid, request.gettransTaskSize());
+
+        // // recacurate trans performance
+        // double oldTransPerf = nodeService.getTransPerf(nodeid);
+        // double calcuratedTransPerf = request.getTransTaskSize() / request.getElapsedTime();
+        // double newTransPerf = performanceManager.calcurateNewPerformance(oldTransPerf, calcuratedTransPerf);
+        // nodeService.setTransPerf(nodeid, newTransPerf);
+
 
         // TODO: node (model을 확인하세요) 를 setter 메소드들로 수정하여 update 하세요!
 
         nodeService.updateOneNode(node);
+      
         transTask.setTranslatedText(request.getTranslatedText());
         transTask.setStatus("success");
         transTaskService.updateTransTask(transTask);
