@@ -18,4 +18,5 @@ public class TransTaskResult {
     private String translateTo;
     private Integer isRecovery;
     private Integer errorReportId;
+    private String workingNodeId;
 }

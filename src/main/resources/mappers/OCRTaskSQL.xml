@@ -26,7 +26,8 @@
     >
         UPDATE projectts.OCRTask t
         SET t.failCause=#{failCause},
-            t.status   = #{status}
+            t.status   = #{status},
+            t.workingNodeId = #{workingNodeId}
         WHERE t.id = #{id};
     </update>
 

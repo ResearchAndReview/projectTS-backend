@@ -50,7 +50,8 @@
             t.isRecovery     = #{isRecovery},
             t.errorReportId  = #{errorReportId},
             t.translateFrom  = #{translateFrom},
-            t.translateTo    = #{translateTo}
+            t.translateTo    = #{translateTo},
+            t.workingNodeId = #{workingNodeId}
         WHERE t.id = #{id};
     </update>
 

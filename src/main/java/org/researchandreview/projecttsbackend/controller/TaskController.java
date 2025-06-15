@@ -317,6 +317,7 @@ public class TaskController {
         node.setStatus("ocr-processing");
         nodeService.updateOneNode(node);
         ocrTask.setStatus("accepted");
+        ocrTask.setWorkingNodeId(uuid);
         ocrTaskService.updateOCRTask(ocrTask);
         return new ResponseEntity<>(new GeneralResponse("Node Accepted OCR Task"), HttpStatus.OK);
     }
@@ -336,8 +337,8 @@ public class TaskController {
         }
         node.setStatus("trans-processing");
         nodeService.updateOneNode(node);
-
         transTaskResult.setStatus("accepted");
+        transTaskResult.setWorkingNodeId(uuid);
         transTaskService.updateTransTask(transTaskResult);
         return new ResponseEntity<>(new GeneralResponse("Node Accepted Translation Task"), HttpStatus.OK);
     }

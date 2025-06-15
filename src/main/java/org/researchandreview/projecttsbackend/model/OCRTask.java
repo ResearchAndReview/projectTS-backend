@@ -12,4 +12,5 @@ public class OCRTask {
     private String status;
     private Timestamp createdAt;
     private Timestamp updatedAt;
+    private String workingNodeId;
 }
