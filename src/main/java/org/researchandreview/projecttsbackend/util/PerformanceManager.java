@@ -1,7 +1,10 @@
 package org.researchandreview.projecttsbackend.util;
 
+import org.springframework.stereotype.Component;
+
 import java.lang.Math;
 
+@Component
 public class PerformanceManager {
     private final double alpha;
 

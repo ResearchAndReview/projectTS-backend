@@ -26,6 +26,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Slf4j
 @RestController
@@ -146,7 +149,7 @@ public class TaskController {
         double newOcrPerf = performanceManager.calcurateNewPerformance(oldOcrPerf, calcuratedOcrPerf);
         node.setOcrPerf(newOcrPerf);
 
-        List<Integer> createdOCRResultId = new ArrayList<>();
+        // List<Integer> createdOCRResultId = new ArrayList<>();
       
         for (Caption caption : request.getCaptions()) {
             int ocrResultId = ocrTaskService.createOCRResult(ocrTaskId, caption.getX(), caption.getY(), caption.getWidth(), caption.getHeight(), caption.getText());
