@@ -114,13 +114,12 @@ public class TaskService {
         }
     }
 
-    public void createOCRTaskMessage(MultipartFile file, int taskId, int ocrTaskId) {
+    public void createOCRTaskMessage(MultipartFile file, int ocrTaskId) {
         try {
             byte[] fileBytes = file.getBytes();
             String base64Encoded = Base64.getEncoder().encodeToString(fileBytes);
             TaskMessage taskMessage = new TaskMessage();
             taskMessage.setTaskType(0);
-            taskMessage.setTaskId(taskId);
             taskMessage.setOcrTaskId(ocrTaskId);
             taskMessage.setImageData(base64Encoded);
 
@@ -131,8 +130,5 @@ public class TaskService {
             log.info(e.getMessage());
         }
     }
-
-
-
 
 }

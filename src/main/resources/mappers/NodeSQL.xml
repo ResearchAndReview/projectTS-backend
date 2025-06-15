@@ -27,7 +27,7 @@
             t.ocrCount     = #{ocrCount},
             t.transCount   = #{transCount},
             t.status       = #{status},
-            t.lastAlive    = #{lastAlive},
+            t.lastAlive    = CURRENT_TIMESTAMP,
             t.contribution = #{contribution}
         WHERE t.id LIKE #{id} ESCAPE '#';
     </update>

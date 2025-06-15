@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.researchandreview.projecttsbackend.mapper.SystemInfoMapper">
+    <select id="findAllSystemInfos" resultType="SystemInfo">
+        SELECT *
+        FROM SystemInfo;
+    </select>
+    <select id="findOneSystemInfoByIdAdmin" resultType="SystemInfo" parameterType="int">
+        SELECT *
+        FROM SystemInfo
+        where id = #{id};
+    </select>
+    <select id="findOneSystemInfoByNodeIdAdmin" resultType="SystemInfo" parameterType="string">
+        SELECT *
+        FROM SystemInfo
+        where nodeId = #{nodeId};
+    </select>
+
+
+
+    <insert id="insertOneSystemInfo"
+            parameterType="org.researchandreview.projecttsbackend.model.SystemInfo"
+            useGeneratedKeys="true"
+            keyProperty="id"
+    >
+        INSERT INTO projectts.SystemInfo (nodeId,
+                                          cpu,
+                                          cpuUsage, ram, ramUsage,
+                                          gpu,
+                                          gpuUsage, vram, vramUsage, weight)
+        VALUES (#{nodeId},
+                #{cpu},
+                #{cpuUsage}, #{ram}, #{ramUsage},
+                #{gpu},
+                #{gpuUsage}, #{vram}, #{vramUsage}, #{weight});
+    </insert>
+
+    <update id="updateOneSystemInfo" parameterType="org.researchandreview.projecttsbackend.model.SystemInfo">
+        UPDATE projectts.SystemInfo
+        SET cpu = #{cpu},
+            cpuUsage = #{cpuUsage}, ram = #{ram}, ramUsage = #{ramUsage},
+            gpu = #{gpu},
+            gpuUsage = #{gpuUsage}, vram = #{vram}, vramUsage = #{vramUsage}, weight = #{weight}
+        WHERE id = #{id};
+    </update>
+
+    <!-- <resultMap id="userResultMap" type="com.example.myapp.model.User">
+         <id property="id" column="id"/>
+         <result property="name" column="name"/>
+         <result property="email" column="email"/>
+     </resultMap>-->
+
+    <!--<select id="findById" parameterType="long" resultMap="userResultMap">
+        SELECT * FROM users WHERE id = #{id}
+    </select>
+
+    <select id="findAll" resultMap="userResultMap">
+        SELECT * FROM users
+    </select>
+
+    <insert id="insert" parameterType="com.example.myapp.model.User" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO users (name, email) VALUES (#{name}, #{email})
+    </insert>
+
+    <update id="update" parameterType="com.example.myapp.model.User">
+        UPDATE users SET name=#{name}, email=#{email} WHERE id=#{id}
+    </update>
+
+    <delete id="delete" parameterType="long">
+        DELETE FROM users WHERE id=#{id}
+    </delete>-->
+</mapper>
