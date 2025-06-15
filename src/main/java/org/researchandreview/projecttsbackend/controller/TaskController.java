@@ -7,9 +7,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.ibatis.javassist.NotFoundException;
 import org.researchandreview.projecttsbackend.dto.*;
 import org.researchandreview.projecttsbackend.model.*;
@@ -25,9 +22,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 @Slf4j
@@ -325,15 +319,15 @@ public class TaskController {
     @PostMapping("/accept-trans")
     public ResponseEntity<GeneralResponse> postAcceptTrans(
             @RequestHeader(name = "x-uuid") String uuid,
-            @RequestParam int transTaskid
+            @RequestParam int transTaskId
     ) throws NotFoundException {
         Node node = nodeService.getOneNodeById(uuid);
         if (node == null) {
             throw new NotFoundException(uuid + " 노드를 찾을 수 없음");
         }
-        TransTaskResult transTaskResult = transTaskService.getTransTaskById(transTaskid);
+        TransTaskResult transTaskResult = transTaskService.getTransTaskById(transTaskId);
         if (transTaskResult == null) {
-            throw new NotFoundException(transTaskid + " 번역 작업을 찾을 수 없음");
+            throw new NotFoundException(transTaskId + " 번역 작업을 찾을 수 없음");
         }
         node.setStatus("trans-processing");
         nodeService.updateOneNode(node);
