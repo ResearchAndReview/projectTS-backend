@@ -13,7 +13,7 @@ public class Node {
     private Timestamp createdAt;
     private Integer ocrCount;
     private Integer transCount;
-    private Integer contribution
+    private Integer contribution;
     private Double ocrPerf;
     private Double ocrTaskSize;
     private Double transTaskSize;

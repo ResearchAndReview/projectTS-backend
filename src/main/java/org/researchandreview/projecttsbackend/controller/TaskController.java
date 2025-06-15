@@ -32,7 +32,6 @@ public class TaskController {
     private final TaskService taskService;
     private final OCRTaskService ocrTaskService;
     private final TransTaskService transTaskService;
-    private final NodeService nodeService;
     private final PerformanceManager performanceManager;
 
     @Autowired

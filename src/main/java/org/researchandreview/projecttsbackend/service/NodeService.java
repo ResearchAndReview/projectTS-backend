@@ -63,6 +63,7 @@ public class NodeService {
     public Double getTransPerf(String id) {
         Node node = nodeMapper.findOneNodeByIdAdmin(id);
         return node.getTransPerf();
+    }
     public SystemInfo createOneSystemInfo(String nodeId) {
         SystemInfo newSystemInfo = new SystemInfo();
         newSystemInfo.setNodeId(nodeId);
