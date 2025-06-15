@@ -146,7 +146,7 @@ public class TaskController {
         double newOcrPerf = performanceManager.calcurateNewPerformance(oldOcrPerf, calcuratedOcrPerf);
         node.setOcrPerf(newOcrPerf);
 
-        List<Integer> createdOCRResultId = new ArrayList<>();
+        // List<Integer> createdOCRResultId = new ArrayList<>();
       
         for (Caption caption : request.getCaptions()) {
             int ocrResultId = ocrTaskService.createOCRResult(ocrTaskId, caption.getX(), caption.getY(), caption.getWidth(), caption.getHeight(), caption.getText());
