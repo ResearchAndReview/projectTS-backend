@@ -9,6 +9,7 @@ import org.researchandreview.projecttsbackend.model.SystemInfo;
 import org.researchandreview.projecttsbackend.util.UUIDGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -23,6 +24,7 @@ public class NodeService {
         this.systemInfoMapper = systemInfoMapper;
     }
 
+    @Transactional
     public Node getOneNodeById(String nodeId) {
         return nodeMapper.findOneNodeByIdAdmin(nodeId);
     }
@@ -45,17 +47,20 @@ public class NodeService {
 
         return newSystemInfo;
     }
-    
+
+    @Transactional
     public void updateOneNode(Node node) {
         nodeMapper.updateOneNode(node);
     }
 
+    @Transactional
     public void updateOneNode(String nodeId, String ip) {
         Node node = nodeMapper.findOneNodeByIdAdmin(nodeId);
         node.setIp(ip);
         nodeMapper.updateOneNode(node);
     }
 
+    @Transactional
     public void updateOneSystemInfo(String nodeId, KeepaliveRequest request) {
         SystemInfo systemInfo = systemInfoMapper.findOneSystemInfoByNodeIdAdmin(nodeId);
         systemInfo.setCpu(request.getCpu());
