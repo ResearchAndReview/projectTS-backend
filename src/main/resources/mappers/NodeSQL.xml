@@ -28,7 +28,11 @@
             t.transCount   = #{transCount},
             t.status       = #{status},
             t.lastAlive    = CURRENT_TIMESTAMP,
-            t.contribution = #{contribution}
+            t.contribution = #{contribution},
+            t.ocrPerf = #{ocrPerf},
+            t.ocrTaskSize = #{ocrTaskSize},
+            t.transTaskSize = #{transTaskSize},
+            t.transPerf = #{transPerf}
         WHERE t.id LIKE #{id} ESCAPE '#';
     </update>
 
